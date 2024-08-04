@@ -1,9 +1,9 @@
 'use client'
 
 // Third-party Imports
-import styled from '@emotion/styled'
+import Image from 'next/image'
 
-import Image from 'next/image';  // Importa el componente Image de Next.js
+import styled from '@emotion/styled'
 
 const LogoText = styled.span`
   color: ${({ color }) => color ?? 'var(--mui-palette-text-primary)'};
@@ -18,12 +18,7 @@ const LogoText = styled.span`
 const Logo = ({ color }) => {
   return (
     <div className='flex items-center min-bs-[24px]'>
-      <Image 
-        src="/images/logos/laBendicionLogo.png"
-        alt="Logo"
-        width={50}
-        height={50}
-      />
+      <Image src='/images/logos/laBendicionLogo.png' alt='Logo' width={50} height={50} />
       <LogoText color={color}>La Bendición</LogoText>
     </div>
   )

@@ -55,18 +55,20 @@ const VerticalMenu = ({ scrollMenu }) => {
         <MenuItem
           href='/'
           icon={<i className='ri-home-smile-line' />}
+
           // suffix={<Chip label='5' size='small' color='error' />}
         >
           Dashboard
         </MenuItem>
-        
-        <MenuSection label="Ventas">
+
+        <MenuSection label='Ventas'>
           <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
             Vender
           </MenuItem>
           <SubMenu
-            label="Gestion"
+            label='Gestion'
             icon={<i className='ri-home-smile-line' />}
+
             // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
@@ -78,13 +80,14 @@ const VerticalMenu = ({ scrollMenu }) => {
           </SubMenu>
         </MenuSection>
 
-        <MenuSection label="Inventario">
+        <MenuSection label='Inventario'>
           <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
             Inventario
           </MenuItem>
           <SubMenu
-            label="Gestion"
+            label='Gestion'
             icon={<i className='ri-home-smile-line' />}
+
             // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
@@ -98,11 +101,12 @@ const VerticalMenu = ({ scrollMenu }) => {
             </MenuItem>
           </SubMenu>
         </MenuSection>
-        
-        <MenuSection label="Administracion">
-        <SubMenu
-            label="Proveedores/Clientes"
+
+        <MenuSection label='Administracion'>
+          <SubMenu
+            label='Proveedores/Clientes'
             icon={<i className='ri-home-smile-line' />}
+
             // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
@@ -113,8 +117,9 @@ const VerticalMenu = ({ scrollMenu }) => {
             </MenuItem>
           </SubMenu>
           <SubMenu
-            label="Recurso Humano"
+            label='Recurso Humano'
             icon={<i className='ri-home-smile-line' />}
+
             // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
@@ -131,15 +136,11 @@ const VerticalMenu = ({ scrollMenu }) => {
             </MenuItem>
           </SubMenu>
           <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
-              Control entradas
+            Control entradas
           </MenuItem>
         </MenuSection>
 
-
-
-{/* Lo que sigue es de ayuda, como ducomentacion*/}
-
-
+        {/* Lo que sigue es de ayuda, como ducomentacion*/}
 
         <MenuSection label='Apps & Pages'>
           <MenuItem href='/account-settings' icon={<i className='ri-user-settings-line' />}>
