@@ -33,6 +33,7 @@ import { useImageVariant } from '@core/hooks/useImageVariant'
 const Login = ({ mode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
+  const [responseMessage, setResponseMessage] = useState('')
 
   // Vars
   const darkImg = '/images/pages/auth-v1-mask-dark.png'
@@ -62,30 +63,22 @@ const Login = ({ mode }) => {
       })
 
       if (response.ok) {
-        const contentType = response.headers.get('content-type')
+        const data = await response.json()
 
-        if (contentType && contentType.includes('application/json')) {
-          // Espera a que la promesa se resuelva
-          const data = await response.json()
-
-          // Guarda el token en el localStorage para que se mantenga la sesión aunque el usuario cierre la ventana
-          localStorage.setItem('token', data.token)
-          console.log(localStorage.getItem('token'))
-          router.push('/account-settings')
-        } else {
-          console.error('Expected JSON response but got:', contentType)
-          const text = await response.text() // Obtener el texto de la respuesta
-
-          console.error('Response text:', text) // Imprimir el texto de la respuesta
-        }
+        // Guarda el token en el localStorage para que se mantenga la sesión aunque el usuario cierre la ventana
+        localStorage.setItem('token', data.token)
+        console.log(localStorage.getItem('token'))
+        router.push('/account-settings')
       } else {
-        console.error('Login failed:', response.statusText)
-        const text = await response.text() // Obtener el texto de la respuesta
+        // Si el backend responde con un error, muestra el mensaje de error
+        const text = await response.text()
+        const jsonResponse = JSON.parse(text)
+        const errorMessage = jsonResponse.message || 'A ocurrido un error'
 
-        console.error('Response text:', text) // Imprimir el texto de la respuesta
+        setResponseMessage(errorMessage)
       }
     } catch (error) {
-      console.error('An error occurred:', error)
+      setResponseMessage('A ocurrido un error, por favor intenta de nuevo')
     }
   }
 
@@ -124,21 +117,10 @@ const Login = ({ mode }) => {
                   )
                 }}
               />
-              {/* <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
-                <FormControlLabel control={<Checkbox />} label='Remember me' />
-                <Typography className='text-end' color='primary' component={Link} href='/forgot-password'>
-                  Forgot password?
-                </Typography>
-              </div> */}
+              {responseMessage && <Typography color='error'>{responseMessage}</Typography>}
               <Button fullWidth variant='contained' type='submit'>
                 Iniciar Sesión
               </Button>
-              {/* <div className='flex justify-center items-center flex-wrap gap-2'>
-                <Typography>New on our platform?</Typography>
-                <Typography component={Link} href='/register' color='primary'>
-                  Create an account
-                </Typography>
-              </div> */}
             </form>
           </div>
         </CardContent>
