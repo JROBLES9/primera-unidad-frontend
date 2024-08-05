@@ -33,6 +33,7 @@ import { useImageVariant } from '@core/hooks/useImageVariant'
 const Login = ({ mode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
+  const [responseMessage, setResponseMessage] = useState('')
 
   // Vars
   const darkImg = '/images/pages/auth-v1-mask-dark.png'
@@ -48,11 +49,12 @@ const Login = ({ mode }) => {
 
     const formData = {
       usuario: e.target.elements[0].value,
-      contrasenia: e.target.elements[1].value
+      contrasenia: e.target.contrasenia.value
     }
 
+    // Envía los datos al backend
     try {
-      const response = await fetch(backendConfig + '/api/login', {
+      const response = await fetch(`${backendConfig.baseURL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -61,12 +63,22 @@ const Login = ({ mode }) => {
       })
 
       if (response.ok) {
+        const data = await response.json()
+
+        // Guarda el token en el localStorage para que se mantenga la sesión aunque el usuario cierre la ventana
+        localStorage.setItem('token', data.token)
+        console.log(localStorage.getItem('token'))
         router.push('/account-settings')
       } else {
-        console.error('Login failed')
+        // Si el backend responde con un error, muestra el mensaje de error
+        const text = await response.text()
+        const jsonResponse = JSON.parse(text)
+        const errorMessage = jsonResponse.message || 'A ocurrido un error'
+
+        setResponseMessage(errorMessage)
       }
     } catch (error) {
-      console.error('An error occurred:', error)
+      setResponseMessage('A ocurrido un error, por favor intenta de nuevo')
     }
   }
 
@@ -87,6 +99,7 @@ const Login = ({ mode }) => {
               <TextField
                 fullWidth
                 label='Contraseña'
+                name='contrasenia'
                 id='outlined-adornment-password'
                 type={isPasswordShown ? 'text' : 'password'}
                 InputProps={{
@@ -104,21 +117,10 @@ const Login = ({ mode }) => {
                   )
                 }}
               />
-              {/* <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
-                <FormControlLabel control={<Checkbox />} label='Remember me' />
-                <Typography className='text-end' color='primary' component={Link} href='/forgot-password'>
-                  Forgot password?
-                </Typography>
-              </div> */}
+              {responseMessage && <Typography color='error'>{responseMessage}</Typography>}
               <Button fullWidth variant='contained' type='submit'>
                 Iniciar Sesión
               </Button>
-              {/* <div className='flex justify-center items-center flex-wrap gap-2'>
-                <Typography>New on our platform?</Typography>
-                <Typography component={Link} href='/register' color='primary'>
-                  Create an account
-                </Typography>
-              </div> */}
             </form>
           </div>
         </CardContent>
