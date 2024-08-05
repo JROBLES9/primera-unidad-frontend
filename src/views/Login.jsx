@@ -48,11 +48,12 @@ const Login = ({ mode }) => {
 
     const formData = {
       usuario: e.target.elements[0].value,
-      contrasenia: e.target.elements[1].value
+      contrasenia: e.target.contrasenia.value
     }
 
+    // Envía los datos al backend
     try {
-      const response = await fetch(backendConfig + '/api/login', {
+      const response = await fetch(`${backendConfig.baseURL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -61,9 +62,27 @@ const Login = ({ mode }) => {
       })
 
       if (response.ok) {
-        router.push('/account-settings')
+        const contentType = response.headers.get('content-type')
+
+        if (contentType && contentType.includes('application/json')) {
+          // Espera a que la promesa se resuelva
+          const data = await response.json()
+
+          // Guarda el token en el localStorage para que se mantenga la sesión aunque el usuario cierre la ventana
+          localStorage.setItem('token', data.token)
+          console.log(localStorage.getItem('token'))
+          router.push('/account-settings')
+        } else {
+          console.error('Expected JSON response but got:', contentType)
+          const text = await response.text() // Obtener el texto de la respuesta
+
+          console.error('Response text:', text) // Imprimir el texto de la respuesta
+        }
       } else {
-        console.error('Login failed')
+        console.error('Login failed:', response.statusText)
+        const text = await response.text() // Obtener el texto de la respuesta
+
+        console.error('Response text:', text) // Imprimir el texto de la respuesta
       }
     } catch (error) {
       console.error('An error occurred:', error)
@@ -87,6 +106,7 @@ const Login = ({ mode }) => {
               <TextField
                 fullWidth
                 label='Contraseña'
+                name='contrasenia'
                 id='outlined-adornment-password'
                 type={isPasswordShown ? 'text' : 'password'}
                 InputProps={{
