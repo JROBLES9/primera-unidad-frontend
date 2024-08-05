@@ -25,6 +25,7 @@ import Illustrations from '@components/Illustrations'
 
 // Config Imports
 import themeConfig from '@configs/themeConfig'
+import backendConfig from '@/configs/backendConfig'
 
 // Hook Imports
 import { useImageVariant } from '@core/hooks/useImageVariant'
@@ -42,9 +43,31 @@ const Login = ({ mode }) => {
   const authBackground = useImageVariant(mode, lightImg, darkImg)
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    router.push('/')
+
+    const formData = {
+      usuario: e.target.elements[0].value,
+      contrasenia: e.target.elements[1].value
+    }
+
+    try {
+      const response = await fetch(backendConfig + '/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+
+      if (response.ok) {
+        router.push('/account-settings')
+      } else {
+        console.error('Login failed')
+      }
+    } catch (error) {
+      console.error('An error occurred:', error)
+    }
   }
 
   return (
@@ -56,14 +79,14 @@ const Login = ({ mode }) => {
           </Link>
           <div className='flex flex-col gap-5'>
             <div>
-              <Typography variant='h4'>{`Welcome to ${themeConfig.templateName}!👋🏻`}</Typography>
-              <Typography className='mbs-1'>Please sign-in to your account and start the adventure</Typography>
+              <Typography variant='h4'>{`Bienvenid@ a ${themeConfig.templateName}!👋🏻`}</Typography>
+              <Typography className='mbs-1'>Por favor inicia sesión</Typography>
             </div>
             <form noValidate autoComplete='off' onSubmit={handleSubmit} className='flex flex-col gap-5'>
-              <TextField autoFocus fullWidth label='Email' />
+              <TextField autoFocus fullWidth label='Usuario' />
               <TextField
                 fullWidth
-                label='Password'
+                label='Contraseña'
                 id='outlined-adornment-password'
                 type={isPasswordShown ? 'text' : 'password'}
                 InputProps={{
@@ -81,36 +104,21 @@ const Login = ({ mode }) => {
                   )
                 }}
               />
-              <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
+              {/* <div className='flex justify-between items-center gap-x-3 gap-y-1 flex-wrap'>
                 <FormControlLabel control={<Checkbox />} label='Remember me' />
                 <Typography className='text-end' color='primary' component={Link} href='/forgot-password'>
                   Forgot password?
                 </Typography>
-              </div>
+              </div> */}
               <Button fullWidth variant='contained' type='submit'>
-                Log In
+                Iniciar Sesión
               </Button>
-              <div className='flex justify-center items-center flex-wrap gap-2'>
+              {/* <div className='flex justify-center items-center flex-wrap gap-2'>
                 <Typography>New on our platform?</Typography>
                 <Typography component={Link} href='/register' color='primary'>
                   Create an account
                 </Typography>
-              </div>
-              <Divider className='gap-3'>or</Divider>
-              <div className='flex justify-center items-center gap-2'>
-                <IconButton size='small' className='text-facebook'>
-                  <i className='ri-facebook-fill' />
-                </IconButton>
-                <IconButton size='small' className='text-twitter'>
-                  <i className='ri-twitter-fill' />
-                </IconButton>
-                <IconButton size='small' className='text-github'>
-                  <i className='ri-github-fill' />
-                </IconButton>
-                <IconButton size='small' className='text-googlePlus'>
-                  <i className='ri-google-fill' />
-                </IconButton>
-              </div>
+              </div> */}
             </form>
           </div>
         </CardContent>
