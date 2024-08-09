@@ -13,7 +13,7 @@ import SalesByCountries from '@views/dashboard/SalesByCountries'
 import CardStatVertical from '@components/card-statistics/Vertical'
 // import Table from '@views/dashboard/Table'
 
-const DashboardAnalytics = () => {
+const prueba = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12} md={4}>
@@ -66,11 +66,11 @@ const DashboardAnalytics = () => {
       <Grid item xs={12} lg={8}>
         <DepositWithdraw />
       </Grid>
-      {/* <Grid item xs={12}>
+      <Grid item xs={12}>
         <Table />
-      </Grid> */}
+      </Grid>
     </Grid>
   )
 }
 
-export default DashboardAnalytics
+export default prueba
