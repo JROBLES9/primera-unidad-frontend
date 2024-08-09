@@ -12,7 +12,7 @@ import tableStyles from '@core/styles/table.module.css'
 
 // const URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
-const Table = () => {
+const tableClientes = () => {
   const [rowsData, setRowsData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -71,4 +71,4 @@ const Table = () => {
   )
 }
 
-export default Table
+export default tableClientes
