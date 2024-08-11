@@ -2,9 +2,9 @@
 import Grid from '@mui/material/Grid'
 
 // Components Imports
-import Table from '@views/clientes/table'
+import Table from '@views/proveedores/table'
 
-const Prueba = () => {
+const proveedores = () => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
@@ -14,4 +14,4 @@ const Prueba = () => {
   )
 }
 
-export default Prueba
+export default proveedores
