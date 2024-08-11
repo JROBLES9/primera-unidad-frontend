@@ -31,7 +31,7 @@ const TableProveedores = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(urlBase + '/api/cliente/getAll')
+                const response = await axios.get(urlBase + '/api/proveedor/getAll')
                 setRowsData(response.data)
                 setFilteredData(response.data)
                 setLoading(false)
@@ -92,7 +92,6 @@ const TableProveedores = () => {
                     >
                         <MenuItem value="nombre">Nombre</MenuItem>
                         <MenuItem value="telefono">Teléfono</MenuItem>
-                        <MenuItem value="nit">NIT</MenuItem>
                     </Select>
                 </div>
                 <div className={tableStyles.buttonContainer}>
@@ -109,7 +108,9 @@ const TableProveedores = () => {
                             <th>ID</th>
                             <th>NOMBRE</th>
                             <th>TELEFONO</th>
-                            <th>NIT</th>
+                            <th>DIRECCION</th>
+                            <th>DESCRIPCION</th>
+                            <th>ESTADO</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
@@ -117,7 +118,7 @@ const TableProveedores = () => {
                         {paginatedData.map((row) => (
                             <tr key={row.idCliente}>
                                 <td>
-                                    <Typography>{row.idCliente}</Typography>
+                                    <Typography>{row.idProveedor}</Typography>
                                 </td>
                                 <td>
                                     <Typography>{row.nombre}</Typography>
@@ -126,7 +127,17 @@ const TableProveedores = () => {
                                     <Typography>{row.telefono}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.nit}</Typography>
+                                    <Typography>{row.direccion}</Typography>
+                                </td>
+                                <td>
+                                    <Typography>{row.descripcion}</Typography>
+                                </td>
+                                <td>
+                                    <Typography>
+                                        {row.estadoActivo ?
+                                            <Button color='success'>Activo</Button>
+                                            : <Button color='error'>Inactivo</Button>}
+                                    </Typography>
                                 </td>
                                 <td>
                                     <div className={tableStyles.btnContainer}>
