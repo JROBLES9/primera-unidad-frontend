@@ -11,7 +11,7 @@ import DistributedColumnChart from '@views/dashboard/DistributedColumnChart'
 import DepositWithdraw from '@views/dashboard/DepositWithdraw'
 import SalesByCountries from '@views/dashboard/SalesByCountries'
 import CardStatVertical from '@components/card-statistics/Vertical'
-// import Table from '@views/dashboard/Table'
+import Table from '@views/dashboard/Table'
 
 const DashboardAnalytics = () => {
   return (
@@ -66,9 +66,9 @@ const DashboardAnalytics = () => {
       <Grid item xs={12} lg={8}>
         <DepositWithdraw />
       </Grid>
-      {/* <Grid item xs={12}>
+      <Grid item xs={12}>
         <Table />
-      </Grid> */}
+      </Grid>
     </Grid>
   )
 }
