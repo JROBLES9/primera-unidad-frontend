@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
+// Para pasar datos a otro componente (push)
+import { useRouter } from 'next/navigation'
+
 // MUI
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
@@ -11,6 +14,7 @@ import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TablePagination from '@mui/material/TablePagination'
+import Fab from '@mui/material/Fab'
 
 // Estilos
 import tableStyles from '@core/styles/table.module.css'
@@ -27,6 +31,8 @@ const TableProveedores = () => {
     const [filterField, setFilterField] = useState('nombre')  // Campo de filtrado por defecto
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
+
+    const router = useRouter();  // Inicializar el router
 
     useEffect(() => {
         const fetchData = async () => {
@@ -65,6 +71,20 @@ const TableProveedores = () => {
         setPage(0)
     }
 
+    const handleEditClick = (row) => {
+        // Construir la URL con los parámetros
+        const queryParams = new URLSearchParams({
+            idProveedor: row.idProveedor,
+            nombre: row.nombre,
+            telefono: row.telefono,
+            direccion: row.direccion,
+            descripcion: row.descripcion,
+            estadoActivo: row.estadoActivo
+        }).toString();
+
+        router.push(`/updateProveedores?${queryParams}`);
+    };
+
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
     if (loading) return <div>Cargando...</div>
@@ -95,10 +115,10 @@ const TableProveedores = () => {
                     </Select>
                 </div>
                 <div className={tableStyles.buttonContainer}>
-                    <Button variant="contained" color="primary" size="small">
+                    <Fab variant="extended" color="primary" size="medium">
                         <img src="images/icons/btnAddPerson.png" alt="Agregar" />
                         <label htmlFor="$">Agregar</label>
-                    </Button>
+                    </Fab>
                 </div>
             </div>
             <div className='overflow-x-auto'>
@@ -116,7 +136,7 @@ const TableProveedores = () => {
                     </thead>
                     <tbody>
                         {paginatedData.map((row) => (
-                            <tr key={row.idCliente}>
+                            <tr key={row.idProveedor}>
                                 <td>
                                     <Typography>{row.idProveedor}</Typography>
                                 </td>
@@ -141,22 +161,22 @@ const TableProveedores = () => {
                                 </td>
                                 <td>
                                     <div className={tableStyles.btnContainer}>
-                                        <Button
-                                            variant="contained"
+                                        <Fab
+                                            onClick={() => handleEditClick(row)}
                                             color="info"
-                                            size="small"
+                                            size="medium"
                                             className={tableStyles.btn}
                                         >
                                             <img src="images/icons/btnEdit.png" alt="Editar" />
-                                        </Button>
-                                        <Button
+                                        </Fab>
+                                        <Fab
                                             variant="contained"
                                             color="primary"
-                                            size="small"
+                                            size="medium"
                                             className={tableStyles.btn}
                                         >
                                             <img src="images/icons/btnDelete.png" alt="Eliminar" />
-                                        </Button>
+                                        </Fab>
                                     </div>
                                 </td>
                             </tr>
