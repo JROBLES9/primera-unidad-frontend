@@ -18,6 +18,8 @@ import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNav
 import menuItemStyles from '@core/styles/vertical/menuItemStyles'
 import menuSectionStyles from '@core/styles/vertical/menuSectionStyles'
 
+// import UnderMaintenance from '@views/Prueba'
+
 const RenderExpandIcon = ({ open, transitionDuration }) => (
   <StyledVerticalNavExpandIcon open={open} transitionDuration={transitionDuration}>
     <i className='ri-arrow-right-s-line' />
@@ -36,13 +38,13 @@ const VerticalMenu = ({ scrollMenu }) => {
     <ScrollWrapper
       {...(isBreakpointReached
         ? {
-            className: 'bs-full overflow-y-auto overflow-x-hidden',
-            onScroll: container => scrollMenu(container, false)
-          }
+          className: 'bs-full overflow-y-auto overflow-x-hidden',
+          onScroll: container => scrollMenu(container, false)
+        }
         : {
-            options: { wheelPropagation: false, suppressScrollX: true },
-            onScrollY: container => scrollMenu(container, true)
-          })}
+          options: { wheelPropagation: false, suppressScrollX: true },
+          onScrollY: container => scrollMenu(container, true)
+        })}
     >
       {/* Incase you also want to scroll NavHeader to scroll with Vertical Menu, remove NavHeader from above and paste it below this comment */}
       {/* Vertical Menu */}
@@ -56,7 +58,7 @@ const VerticalMenu = ({ scrollMenu }) => {
           href='/'
           icon={<i className='ri-home-smile-line' />}
 
-          // suffix={<Chip label='5' size='small' color='error' />}
+        // suffix={<Chip label='5' size='small' color='error' />}
         >
           Dashboard
         </MenuItem>
@@ -69,7 +71,7 @@ const VerticalMenu = ({ scrollMenu }) => {
             label='Gestion'
             icon={<i className='ri-home-smile-line' />}
 
-            // suffix={<Chip label='5' size='small' color='error' />}
+          // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
               Historial de Ventas
@@ -88,7 +90,7 @@ const VerticalMenu = ({ scrollMenu }) => {
             label='Gestion'
             icon={<i className='ri-home-smile-line' />}
 
-            // suffix={<Chip label='5' size='small' color='error' />}
+          // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
               Productos
@@ -107,12 +109,12 @@ const VerticalMenu = ({ scrollMenu }) => {
             label='Proveedores/Clientes'
             icon={<i className='ri-home-smile-line' />}
 
-            // suffix={<Chip label='5' size='small' color='error' />}
+          // suffix={<Chip label='5' size='small' color='error' />}
           >
-            <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
+            <MenuItem href='/proveedores' icon={<i className='ri-user-settings-line' />}>
               Proveedores
             </MenuItem>
-            <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
+            <MenuItem href='/clientes' icon={<i className='ri-user-settings-line' />}>
               Clientes
             </MenuItem>
           </SubMenu>
@@ -120,7 +122,7 @@ const VerticalMenu = ({ scrollMenu }) => {
             label='Recurso Humano'
             icon={<i className='ri-home-smile-line' />}
 
-            // suffix={<Chip label='5' size='small' color='error' />}
+          // suffix={<Chip label='5' size='small' color='error' />}
           >
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
               Colaboradores
