@@ -1,12 +1,10 @@
 "use client";
 
+// Importaciones de React y MUI
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
-// Para pasar datos a otro componente (push)
-import { useRouter } from 'next/navigation'
-
-// MUI
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
@@ -15,25 +13,26 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TablePagination from '@mui/material/TablePagination'
 import Fab from '@mui/material/Fab'
-
-// Estilos
+import { useRouter } from 'next/navigation'
 import tableStyles from '@core/styles/table.module.css'
 
-// Ruta base para el consumo de laAPI
 const urlBase = process.env.NEXT_PUBLIC_APP_URL
 
 const TableProveedores = () => {
+    // Estado para almacenar los datos
     const [rowsData, setRowsData] = useState([])
     const [filteredData, setFilteredData] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState('')
-    const [filterField, setFilterField] = useState('nombre')  // Campo de filtrado por defecto
+    const [filterField, setFilterField] = useState('nombre')
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [view, setView] = useState('all') // Estado para manejar el filtro de estado
 
-    const router = useRouter();  // Inicializar el router
+    const router = useRouter()
 
+    // Fetch de datos al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -46,22 +45,25 @@ const TableProveedores = () => {
                 setLoading(false)
             }
         }
-
         fetchData()
     }, [])
 
+    // Filtrado de datos al cambiar el término de búsqueda, campo de filtro o estado de vista
     useEffect(() => {
         const filterData = () => {
             const lowercasedTerm = searchTerm.toLowerCase()
             const filtered = rowsData.filter(row =>
-                row[filterField]?.toLowerCase().includes(lowercasedTerm)
+                row[filterField]?.toLowerCase().includes(lowercasedTerm) &&
+                (view === 'all' ||
+                    (view === 'active' && row.estadoActivo) ||
+                    (view === 'inactive' && !row.estadoActivo))
             )
             setFilteredData(filtered)
         }
-
         filterData()
-    }, [searchTerm, filterField, rowsData])
+    }, [searchTerm, filterField, rowsData, view])
 
+    // Manejo de la paginación
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
     }
@@ -71,19 +73,24 @@ const TableProveedores = () => {
         setPage(0)
     }
 
+    // Manejo del cambio de vista (filtro de estado)
+    const handleView = (event, newView) => {
+        setView(newView)
+    }
+
+    // Función para manejar la edición
     const handleEditClick = (row) => {
-        // Construir la URL con los parámetros
         const queryParams = new URLSearchParams({
             idProveedor: row.idProveedor,
             nombre: row.nombre,
             telefono: row.telefono,
             direccion: row.direccion,
             descripcion: row.descripcion,
-            estadoActivo: row.estadoActivo
-        }).toString();
+            estadoActivo: row.estadoActivo.toString()
+        }).toString()
 
-        router.push(`/updateProveedores?${queryParams}`);
-    };
+        router.push(`/updateProveedores?${queryParams}`)
+    }
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
@@ -114,8 +121,31 @@ const TableProveedores = () => {
                         <MenuItem value="telefono">Teléfono</MenuItem>
                     </Select>
                 </div>
+                <div className={tableStyles.filterContainer}>
+                    {/* Botones de filtro de estado */}
+                    <ToggleButtonGroup
+                        exclusive
+                        value={view}
+                        orientation='horizontal'
+                        onChange={handleView}
+                        aria-label='filter by status'
+                    >
+                        <ToggleButton value='all' aria-label='all' >
+                            <i className='ri-user-line' />
+                            Todos
+                        </ToggleButton>
+                        <ToggleButton value='active' aria-label='active'>
+                            <i className='ri-user-follow-line' />
+                            Activos
+                        </ToggleButton>
+                        <ToggleButton value='inactive' aria-label='inactive'>
+                            <i className='ri-user-forbid-line' />
+                            Inactivos
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </div>
                 <div className={tableStyles.buttonContainer}>
-                    <Fab variant="extended" color="primary" size="medium">
+                    <Fab variant="extended" color="primary" size="medium" href='/createProveedores'>
                         <img src="images/icons/btnAddPerson.png" alt="Agregar" />
                         <label htmlFor="$">Agregar</label>
                     </Fab>
