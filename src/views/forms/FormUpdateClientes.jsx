@@ -46,6 +46,10 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
         }
     };
 
+    const handleCancel = () => {
+        router.push('/clientes');  // Redirigir a la página de proveedores o cualquier otra página
+    };
+
     return (
         <Card>
             <CardHeader
@@ -112,9 +116,13 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
                             />
                         </Grid>
                         <Grid item xs={12} align={'center'}>
-                            <Button variant='contained' type='submit'>
+                            <Button variant='contained' type='submit' sx={{ mr: 2 }}>
                                 <i className='ri-user-add-line' />
                                 Guardar
+                            </Button>
+                            <Button variant='contained' color='secondary' onClick={handleCancel}>
+                                <i className='ri-picture-in-picture-exit-line' />
+                                Cancelar
                             </Button>
                         </Grid>
                     </Grid>
