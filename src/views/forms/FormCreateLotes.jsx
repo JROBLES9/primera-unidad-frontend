@@ -25,20 +25,25 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'success' });
     const router = useRouter();
 
-    const [date, setDate] = useState(new Date())
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/lote/`, {
-                categoria,
-                cantidadInicial,
-                cantidadDisponible,
-                fechaCaducidad,
-                fechaIngreso,
-                idPedido,
-                idProducto
-            });
+        const data = {
+            categoria,
+            cantidadInicial,
+            cantidadDisponible,
+            fechaCaducidad,
+            fechaIngreso,
+            idPedido,
+            idProducto
+        };
 
+
+        try {
+            console.log('Enviando datos:', data);
+
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/lote/`, data);
+
+            console.log('Respuesta del servidor:', response);
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Registro Exitoso', severity: 'success' });
                 setTimeout(() => {
@@ -56,7 +61,7 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
     };
 
     const handleCancel = () => {
-        router.push('/lotes');  // Redirigir a la página de proveedores o cualquier otra página
+        router.push('/lotes');
     };
 
     return (
@@ -86,11 +91,6 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 value={categoria}
                                 onChange={(e) => setCategoria(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-user-3-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
@@ -101,11 +101,6 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 value={cantidadInicial}
                                 onChange={(e) => setCantidadInicial(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-direction-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
@@ -116,11 +111,6 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 value={cantidadDisponible}
                                 onChange={(e) => setCantidadDisponible(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-phone-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
@@ -131,11 +121,6 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 value={fechaCaducidad}
                                 onChange={(e) => setFechaCaducidad(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-phone-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
@@ -146,11 +131,6 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 value={fechaIngreso}
                                 onChange={(e) => setFechaIngreso(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-phone-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
@@ -161,11 +141,6 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 value={idPedido}
                                 onChange={(e) => setIdPedido(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-file-text-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
@@ -176,11 +151,7 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 value={idProducto}
                                 onChange={(e) => setIdProducto(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-file-text-line' />
-                                        </InputAdornment>
-                                    )
+
                                 }}
                             />
                         </Grid>
