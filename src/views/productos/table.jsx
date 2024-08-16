@@ -106,23 +106,15 @@ const TableProductos = () => {
   };
 
   const handleDeleteClick = async (row) => {
-    const { idProducto } = row;
-
     try {
-      const response = await fetch(`/api/productos/${idProducto}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al eliminar el producto');
+      const response = await axios.delete(`${urlBase}/api/producto/${row.idProducto}`);
+      if (response.status === 200) {
+        // Recargar la página
+        router.reload();
       }
-
-      // Actualizar el estado local o volver a cargar los datos
-      setFilteredData(filteredData.filter(product => product.idProducto !== idProducto));
     } catch (error) {
-      console.error('Error:', error);
-      // Manejar el error, por ejemplo, mostrar un mensaje al usuario
-    }
+      console.error('Error al eliminar el producto:', error);
+    };
   };
 
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
