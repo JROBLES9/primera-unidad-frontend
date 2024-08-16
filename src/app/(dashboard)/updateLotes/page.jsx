@@ -12,9 +12,9 @@ const UpdateLotes = () => {
     const cantidadDisponible = searchParams.get('cantidadDisponible');
     const fechaCaducidad = searchParams.get('fechaCaducidad');
     const fechaIngreso = searchParams.get('fechaIngreso');
+    const estadoActivo = searchParams.get('estadoActivo');
     const idPedido = searchParams.get('idPedido');
     const idProducto = searchParams.get('idProducto');
-    const estadoActivo = searchParams.get('estadoActivo');
 
     return (
         <Grid item xs={12} md={6} width={0.75}
@@ -30,9 +30,9 @@ const UpdateLotes = () => {
                 cantidadDisponible={cantidadDisponible}
                 fechaCaducidad={fechaCaducidad}
                 fechaIngreso={fechaIngreso}
+                estadoActivo={estadoActivo}
                 idPedido={idPedido}
                 idProducto={idProducto}
-                estadoActivo={estadoActivo}
             />
         </Grid>
     );
