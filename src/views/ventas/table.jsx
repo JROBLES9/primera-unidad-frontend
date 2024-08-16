@@ -82,7 +82,7 @@ const TableVentas = () => {
             empleadoNombre: row.empleadoNombre
         }).toString();
 
-        router.push(`/updateClientes?${queryParams}`);
+        router.push(`/reviewVenta?${queryParams}`);
     };
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -116,9 +116,9 @@ const TableVentas = () => {
                     </Select>
                 </div>
                 <div className={tableStyles.buttonContainer}>
-                    <Fab variant="extended" color="primary" size="medium" href='/createClientes'>
-                        <img src="images/icons/btnAddPerson.png" alt="Agregar" />
-                        <label htmlFor="$">Agregar</label>
+                    <Fab variant="extended" color="primary" size="medium" href='/createVenta'>
+                        <i className='ri-apps-2-add-line' />
+                        <label htmlFor="$">Venta Nueva</label>
                     </Fab>
                 </div>
             </div>
@@ -160,15 +160,7 @@ const TableVentas = () => {
                                             size="medium"
                                             className={tableStyles.btn}
                                         >
-                                            <img src="images/icons/btnEdit.png" alt="Editar" />
-                                        </Fab>
-                                        <Fab
-                                            variant="contained"
-                                            color="primary"
-                                            size="medium"
-                                            className={tableStyles.btn}
-                                        >
-                                            <img src="images/icons/btnDelete.png" alt="Eliminar" />
+                                            <i className='ri-eye-fill' alt="Ver" />
                                         </Fab>
                                     </div>
                                 </td>
