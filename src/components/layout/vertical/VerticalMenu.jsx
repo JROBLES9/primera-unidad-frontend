@@ -67,19 +67,6 @@ const VerticalMenu = ({ scrollMenu }) => {
           <MenuItem href='/venta' icon={<i className='ri-user-settings-line' />}>
             Vender
           </MenuItem>
-          <SubMenu
-            label='Gestion'
-            icon={<i className='ri-home-smile-line' />}
-
-          // suffix={<Chip label='5' size='small' color='error' />}
-          >
-            <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
-              Historial de Ventas
-            </MenuItem>
-            <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
-              Detalle de venta
-            </MenuItem>
-          </SubMenu>
         </MenuSection>
 
         <MenuSection label='Inventario'>
