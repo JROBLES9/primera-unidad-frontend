@@ -92,13 +92,13 @@ const VerticalMenu = ({ scrollMenu }) => {
 
           // suffix={<Chip label='5' size='small' color='error' />}
           >
-            <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
+            <MenuItem href='/productos' icon={<i className='ri-user-settings-line' />}>
               Productos
             </MenuItem>
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
               Pedidos
             </MenuItem>
-            <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
+            <MenuItem href='/lotes' icon={<i className='ri-user-settings-line' />}>
               Lotes
             </MenuItem>
           </SubMenu>
