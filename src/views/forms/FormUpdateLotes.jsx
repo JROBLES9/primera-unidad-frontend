@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import Switch from '@mui/material/Switch';
@@ -17,32 +16,36 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useRouter } from 'next/navigation';
 
-const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInicial: initialCantidadInicial, cantidadDisponible: initialCantidadDisponible, setFechaCaducidad: initialFechaCaducidad, fechaIngreso: initialFechaIngreso, idPedido: initialIdPedido, idProducto: initialIdProdcuto, estadoActivo: initialEstadoActivo }) => {
+const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInicial: initialCantidadInicial, cantidadDisponible: initialCantidadDisponible, fechaCaducidad: initialFechaCaducidad, fechaIngreso: initialFechaIngreso, idPedido: initialIdPedido, idProducto: initialIdProdcuto, estadoActivo: initialEstadoActivo }) => {
     const [categoria, setCategoria] = useState(initialCategoria || '');
     const [cantidadInicial, setCantidadInicial] = useState(initialCantidadInicial || '');
     const [cantidadDisponible, setCantidadDisponible] = useState(initialCantidadDisponible || '');
     const [fechaCaducidad, setFechaCaducidad] = useState(initialFechaCaducidad || '');
     const [fechaIngreso, setFechaIngreso] = useState(initialFechaIngreso || '');
+    const [estadoActivo, setEstadoActivo] = useState(initialEstadoActivo);
     const [idPedido, setIdPedido] = useState(initialIdPedido || '');
-    const [idProducto, setIdProducto] = useState(initialIdProdcuto || 1);
-    const [estadoActivo, setEstadoActivo] = useState(initialEstadoActivo); // Estado booleano
+    const [idProducto, setIdProducto] = useState(initialIdProdcuto || '');
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'success' });
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/lote/${idLote}`, {
-                categoria,
-                cantidadInicial,
-                cantidadDisponible,
-                fechaCaducidad,
-                fechaIngreso,
-                idPedido,
-                idProducto,
-                estadoActivo
-            });
+        const dataToSend = {
+            categoria,
+            cantidadInicial,
+            cantidadDisponible,
+            fechaCaducidad,
+            fechaIngreso,
+            estadoActivo: String(estadoActivo), // Convertir estadoActivo a string
+            idPedido,
+            idProducto
+        };
 
+        console.log('Data being sent:', dataToSend);
+
+        try {
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/lote/${idLote}`, dataToSend);
+            console.log('response:', response);
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Actualización Exitosa', severity: 'success' });
                 setTimeout(() => {
@@ -133,6 +136,21 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 }}
                             />
                         </Grid>
+                        <Grid item xs={12} align={'start'}>
+                            <label htmlFor="s">ESTADO</label>
+                            <br />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={estadoActivo === 1}
+                                        onChange={(e) => setEstadoActivo(e.target.checked ? 1 : 0)}
+                                        color="success"
+                                        size='medium'
+                                    />
+                                }
+                                label={estadoActivo == true ? 'Activo' : 'Inactivo'}
+                            />
+                        </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
@@ -151,21 +169,6 @@ const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInic
                                 onChange={(e) => setIdProducto(e.target.value)}
                                 InputProps={{
                                 }}
-                            />
-                        </Grid>
-                        <Grid item xs={12} align={'start'}>
-                            <label htmlFor="s">ESTADO</label>
-                            <br />
-                            <FormControlLabel
-                                control={
-                                    <Switch
-                                        checked={estadoActivo === 1}
-                                        onChange={(e) => setEstadoActivo(e.target.checked ? 1 : 0)}
-                                        color="success"
-                                        size='medium'
-                                    />
-                                }
-                                label={estadoActivo === 1 ? 'Activo' : 'Inactivo'}
                             />
                         </Grid>
                         <Grid item xs={12} align={'center'} >
