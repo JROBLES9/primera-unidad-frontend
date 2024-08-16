@@ -31,7 +31,12 @@ const ColaboradoresComponent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(urlBase + '/api/rrhh/all/1')
+        const token = localStorage.getItem('token')
+        const response = await axios.get(urlBase + '/api/rrhh/all/1', {
+            headers: {
+              Authorization: `${token}`
+            }
+          })
         setRowsData(response.data)
         setFilteredData(response.data)
         setLoading(false)
@@ -119,6 +124,9 @@ const ColaboradoresComponent = () => {
           <tbody>
             {paginatedData.map((row) => (
               <tr key={row.idRrhh}>
+                <td>
+                    <Typography>{row.idRrhh}</Typography>
+                </td>
                 <td>
                     <Typography>{row.nombre}</Typography>
                 </td>
