@@ -3,23 +3,19 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-// Para pasar datos a otro componente (push)
-import { useRouter } from 'next/navigation'
-
 // MUI
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
-// import Button from '@mui/material/Button'
+import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TablePagination from '@mui/material/TablePagination'
-import Fab from '@mui/material/Fab'
 
 // Estilos
 import tableStyles from '@core/styles/table.module.css'
 
-// Ruta base para el consumo de la API
+// Ruta base para el consumo de laAPI
 const urlBase = process.env.NEXT_PUBLIC_APP_URL
 
 const TableClientes = () => {
@@ -31,8 +27,6 @@ const TableClientes = () => {
   const [filterField, setFilterField] = useState('nombre')  // Campo de filtrado por defecto
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
-
-  const router = useRouter();  // Inicializar el router
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,18 +65,6 @@ const TableClientes = () => {
     setPage(0)
   }
 
-  const handleEditClick = (row) => {
-    // Construir la URL con los parámetros
-    const queryParams = new URLSearchParams({
-      idCliente: row.idCliente,
-      nombre: row.nombre,
-      telefono: row.telefono,
-      nit: row.nit
-    }).toString();
-
-    router.push(`/updateClientes?${queryParams}`);
-  };
-
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   if (loading) return <div>Cargando...</div>
@@ -114,10 +96,10 @@ const TableClientes = () => {
           </Select>
         </div>
         <div className={tableStyles.buttonContainer}>
-          <Fab variant="extended" color="primary" size="medium" href='/createClientes'>
+          <Button variant="contained" color="primary" size="small">
             <img src="images/icons/btnAddPerson.png" alt="Agregar" />
             <label htmlFor="$">Agregar</label>
-          </Fab>
+          </Button>
         </div>
       </div>
       <div className='overflow-x-auto'>
@@ -148,22 +130,22 @@ const TableClientes = () => {
                 </td>
                 <td>
                   <div className={tableStyles.btnContainer}>
-                    <Fab
-                      onClick={() => handleEditClick(row)}
+                    <Button
+                      variant="contained"
                       color="info"
-                      size="medium"
+                      size="small"
                       className={tableStyles.btn}
                     >
                       <img src="images/icons/btnEdit.png" alt="Editar" />
-                    </Fab>
-                    <Fab
+                    </Button>
+                    <Button
                       variant="contained"
                       color="primary"
-                      size="medium"
+                      size="small"
                       className={tableStyles.btn}
                     >
                       <img src="images/icons/btnDelete.png" alt="Eliminar" />
-                    </Fab>
+                    </Button>
                   </div>
                 </td>
               </tr>
