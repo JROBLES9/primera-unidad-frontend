@@ -99,9 +99,10 @@ const TableLotes = () => {
             cantidadInicial: row.cantidadInicial.toString(),
             cantidadDisponible: row.cantidadDisponible.toString(),
             fechaCaducidad: row.fechaCaducidad,
+            estadoActivo: row.estadoActivo.toString(),
             fechaIngreso: row.fechaIngreso,
-            idPedido: row.idPedido.toString,
-            estadoActivo: row.estadoActivo.toString()
+            idPedido: row.idPedido,
+            idProducto: row.idProducto
         }).toString()
 
         router.push(`/updateLotes?${queryParams}`)
@@ -177,6 +178,7 @@ const TableLotes = () => {
                             <th>FECHA DE INGRESO</th>
                             <th>ESTADO</th>
                             <th>ID DE PEDIDO</th>
+                            <th>ID DE PRODUCTO</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
@@ -202,14 +204,17 @@ const TableLotes = () => {
                                     <Typography>{row.fechaIngreso}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.idPedido}</Typography>
-                                </td>
-                                <td>
                                     <Typography>
                                         {row.estadoActivo ?
                                             <Button color='success'>Activo</Button>
                                             : <Button color='error'>Inactivo</Button>}
                                     </Typography>
+                                </td>
+                                <td>
+                                    <Typography>{row.idPedido}</Typography>
+                                </td>
+                                <td>
+                                    <Typography>{row.idProducto}</Typography>
                                 </td>
                                 <td>
                                     <div className={tableStyles.btnContainer}>
