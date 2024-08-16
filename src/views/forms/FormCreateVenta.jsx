@@ -30,10 +30,11 @@ const theme = createTheme({
 const NuevaVentaForm = () => {
     const [montoTotal, setMontoTotal] = useState(0);
     const [idCliente, setIdCliente] = useState('');
-    const [detalles, setDetalles] = useState([{ idProducto: '', cantidadProducto: 0, subtotal: 0 }]);
+    const [detalles, setDetalles] = useState([{ idProducto: '', idLote: '', cantidadProducto: 0, subtotal: 0 }]);
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'success' });
     const [clientes, setClientes] = useState([]);
     const [productos, setProductos] = useState([]);
+    const [lotes, setLotes] = useState({});
 
     const router = useRouter();
 
@@ -45,8 +46,8 @@ const NuevaVentaForm = () => {
         const fetchData = async () => {
             try {
                 const [clientesRes, productosRes] = await Promise.all([
-                    axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/clientes`),
-                    axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/productos`)
+                    axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/cliente/getAll`),
+                    axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/producto/all`)
                 ]);
                 setClientes(clientesRes.data);
                 setProductos(productosRes.data);
@@ -58,32 +59,49 @@ const NuevaVentaForm = () => {
         fetchData();
     }, []);
 
+    const fetchLotes = async (idProducto) => {
+        try {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/lote/byIdProduct/${idProducto}`);
+            setLotes((prevLotes) => ({ ...prevLotes, [idProducto]: response.data }));
+        } catch (error) {
+            console.error('Error fetching lotes:', error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/ventas`, {
-                venta: {
-                    fecha: fechaActual,
-                    montoTotal,
-                    idCliente,
-                    idRrhh: 1 // ID del empleado fijo
-                },
-                detalles
-            });
 
-            if (response.status === 201) {
+        // Construir los datos de la venta
+        const ventaData = {
+            venta: {
+                fecha: fechaActual,
+                montoTotal: parseFloat(montoTotal.toFixed(2)),
+                idCliente: parseInt(idCliente),
+                idRrhh: 1 // ID del empleado fijo
+            },
+            detalles: detalles.map(detalle => ({
+                idProducto: parseInt(detalle.idProducto),
+                cantidadProducto: parseInt(detalle.cantidadProducto),
+                subtotal: parseFloat(detalle.subtotal.toFixed(2))
+            }))
+        };
+
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/venta/`, ventaData);
+
+            if (response.status === 200) {
+                // Mostrar mensaje de éxito
                 setAlert({ show: true, message: 'Venta creada exitosamente', severity: 'success' });
+
+                // Esperar 1.5 segundos antes de redirigir
                 setTimeout(() => {
-                    setAlert({ show: false, message: '', severity: 'success' });
-                    router.push('/ventas');
+                    router.push('/venta');
                 }, 1500);
             }
         } catch (error) {
             console.error('Error al crear la venta:', error);
+            // Mostrar mensaje de error
             setAlert({ show: true, message: 'Error al crear la venta', severity: 'error' });
-            setTimeout(() => {
-                setAlert({ show: false, message: '', severity: 'error' });
-            }, 2000);
         }
     };
 
@@ -94,10 +112,15 @@ const NuevaVentaForm = () => {
     const handleDetalleChange = (index, field, value) => {
         const newDetalles = [...detalles];
         newDetalles[index][field] = value;
+        if (field === 'idProducto') {
+            fetchLotes(value);
+            newDetalles[index].idLote = ''; // Resetear el lote al cambiar de producto
+        }
         if (field === 'cantidadProducto' || field === 'idProducto') {
-            const producto = productos.find(p => p.id === newDetalles[index].idProducto);
+            const producto = productos.find(p => p.idProducto === newDetalles[index].idProducto);
             if (producto) {
-                newDetalles[index].subtotal = producto.precio * newDetalles[index].cantidadProducto;
+                // Calcular subtotal
+                newDetalles[index].subtotal = producto.precioVenta * newDetalles[index].cantidadProducto;
             }
         }
         setDetalles(newDetalles);
@@ -110,7 +133,7 @@ const NuevaVentaForm = () => {
     };
 
     const agregarDetalle = () => {
-        setDetalles([...detalles, { idProducto: '', cantidadProducto: 0, subtotal: 0 }]);
+        setDetalles([...detalles, { idProducto: '', idLote: '', cantidadProducto: 0, subtotal: 0 }]);
     };
 
     const eliminarDetalle = (index) => {
@@ -132,6 +155,14 @@ const NuevaVentaForm = () => {
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={3}>
+                            {/* Coloca el bloque de alerta aquí, justo después de abrir el Grid container */}
+                            {alert.show && (
+                                <Grid item xs={12}>
+                                    <Alert severity={alert.severity} onClose={() => setAlert({ ...alert, show: false })}>
+                                        {alert.message}
+                                    </Alert>
+                                </Grid>
+                            )}
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
@@ -154,7 +185,7 @@ const NuevaVentaForm = () => {
                                 >
                                     <MenuItem value="" disabled>Seleccione un cliente</MenuItem>
                                     {clientes.map((cliente) => (
-                                        <MenuItem key={cliente.id} value={cliente.id}>{cliente.nombre}</MenuItem>
+                                        <MenuItem key={cliente.idCliente} value={cliente.idCliente}>{cliente.nombre}</MenuItem>
                                     ))}
                                 </Select>
                             </Grid>
@@ -162,7 +193,7 @@ const NuevaVentaForm = () => {
                                 <Typography variant="h6" sx={{ mb: 2 }} color={"primary"}>Detalles de la venta</Typography>
                                 {detalles.map((detalle, index) => (
                                     <Grid container spacing={2} key={index} sx={{ mb: 2 }}>
-                                        <Grid item xs={12} sm={5}>
+                                        <Grid item xs={12} sm={3}>
                                             <Select
                                                 fullWidth
                                                 value={detalle.idProducto}
@@ -172,11 +203,28 @@ const NuevaVentaForm = () => {
                                             >
                                                 <MenuItem value="" disabled>Seleccione un producto</MenuItem>
                                                 {productos.map((producto) => (
-                                                    <MenuItem key={producto.id} value={producto.id}>{producto.nombre}</MenuItem>
+                                                    <MenuItem key={producto.idProducto} value={producto.idProducto}>{producto.nombre}</MenuItem>
                                                 ))}
                                             </Select>
                                         </Grid>
                                         <Grid item xs={12} sm={3}>
+                                            <Select
+                                                fullWidth
+                                                value={detalle.idLote}
+                                                onChange={(e) => handleDetalleChange(index, 'idLote', e.target.value)}
+                                                displayEmpty
+                                                variant="outlined"
+                                                disabled={!detalle.idProducto}
+                                            >
+                                                <MenuItem value="" disabled>Seleccione un lote</MenuItem>
+                                                {lotes[detalle.idProducto]?.map((lote) => (
+                                                    <MenuItem key={lote.idLote} value={lote.idLote}>
+                                                        {`Lote: ${lote.idLote} (V ${lote.fechaCaducidad}) (Disp. ${lote.cantidadDisponible})`}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </Grid>
+                                        <Grid item xs={12} sm={2}>
                                             <TextField
                                                 fullWidth
                                                 type="number"
@@ -216,38 +264,27 @@ const NuevaVentaForm = () => {
                                 </Button>
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    type="number"
-                                    label="Monto Total"
-                                    value={montoTotal}
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    variant="outlined"
-                                />
+                                <Typography variant="h6" color={"primary"}>Total: Q. {montoTotal.toFixed(2)}</Typography>
                             </Grid>
-                            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
-                                <Button variant='contained' type='submit' color="primary" sx={{ minWidth: 120 }}>
-                                    <i className='ri-save-line' />
-                                    Guardar
+                            {alert.show && (
+                                <Grid item xs={12}>
+                                    <Alert severity={alert.severity}>{alert.message}</Alert>
+                                </Grid>
+                            )}
+                            <Grid item xs={12}>
+                                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                                    Guardar Venta
                                 </Button>
-                                <Button variant='contained' color='secondary' onClick={handleCancel} sx={{ minWidth: 120 }}>
-                                    <i className='ri-close-circle-line' />
+                                <Button variant="outlined" onClick={handleCancel} fullWidth sx={{ mt: 1 }}>
                                     Cancelar
                                 </Button>
                             </Grid>
                         </Grid>
                     </form>
                 </CardContent>
-                {alert.show && (
-                    <Alert severity={alert.severity} sx={{ mb: 2 }} onClose={() => setAlert({ ...alert, show: false })}>
-                        {alert.message}
-                    </Alert>
-                )}
             </Card>
         </ThemeProvider>
     );
-}
+};
 
 export default NuevaVentaForm;
