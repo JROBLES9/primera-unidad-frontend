@@ -26,13 +26,18 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const data = {
+            nombre,
+            precioVenta,
+            descripcion,
+            esPerecedero
+        };
+
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/producto/`, {
-                nombre,
-                precioVenta,
-                descripcion,
-                esPerecedero
-            });
+            console.log('Enviando datos:', data);  // Log de los datos que se están enviando
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/producto/`, data);
+
+            console.log('Respuesta del servidor:', response);  // Log de la respuesta del servidor
 
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Registro Exitoso', severity: 'success' });
@@ -43,6 +48,7 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
             }
         } catch (error) {
             console.error('Error al registrar el producto:', error);
+            console.log('Detalles del error:', error.response ? error.response.data : error.message);  // Log de los detalles del error
             setAlert({ show: true, message: 'Error al registrar el producto', severity: 'error' });
             setTimeout(() => {
                 setAlert({ show: false, message: '', severity: 'error' });
@@ -51,7 +57,7 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
     };
 
     const handleCancel = () => {
-        router.push('/productos');  // Redirigir a la página de proveedores o cualquier otra página
+        router.push('/productos');  // Redirigir a la página de productos o cualquier otra página
     };
 
     return (
@@ -80,13 +86,6 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
                                 label='Nombre'
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-user-3-line' />
-                                        </InputAdornment>
-                                    )
-                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -95,13 +94,6 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
                                 label='Precio de Venta'
                                 value={precioVenta}
                                 onChange={(e) => setPrecioVenta(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-phone-fill' />
-                                        </InputAdornment>
-                                    )
-                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -110,13 +102,6 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
                                 label='Descripcion'
                                 value={descripcion}
                                 onChange={(e) => setDescripcion(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-id-card-fill' />
-                                        </InputAdornment>
-                                    )
-                                }}
                             />
                         </Grid>
                         <Grid item xs={12} align={'start'}>
