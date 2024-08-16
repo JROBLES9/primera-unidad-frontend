@@ -28,7 +28,7 @@ const TableVentas = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState('')
-    const [filterField, setFilterField] = useState('cliente')  // Campo de filtrado por defecto
+    const [filterField, setFilterField] = useState('clienteNombre')  // Campo de filtrado por defecto
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
 
@@ -110,9 +110,9 @@ const TableVentas = () => {
                         size="small"
                         className={tableStyles.selectField}
                     >
-                        <MenuItem value="cliente">Cliente</MenuItem>
+                        <MenuItem value="clienteNombre">Cliente</MenuItem>
                         <MenuItem value="fecha">Fecha</MenuItem>
-                        <MenuItem value="empleado">Empleado</MenuItem>
+                        <MenuItem value="empleadoNombre">Empleado</MenuItem>
                     </Select>
                 </div>
                 <div className={tableStyles.buttonContainer}>
@@ -131,6 +131,7 @@ const TableVentas = () => {
                             <th>TOTAL Q</th>
                             <th>CLIENTE</th>
                             <th>EMPLEADO</th>
+                            <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
