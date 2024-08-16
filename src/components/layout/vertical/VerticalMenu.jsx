@@ -83,7 +83,7 @@ const VerticalMenu = ({ scrollMenu }) => {
         </MenuSection>
 
         <MenuSection label='Inventario'>
-          <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
+          <MenuItem href='/inventarios' icon={<i className='ri-user-settings-line' />}>
             Inventario
           </MenuItem>
           <SubMenu
