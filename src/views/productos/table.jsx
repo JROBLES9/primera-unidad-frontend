@@ -17,6 +17,7 @@ import TablePagination from '@mui/material/TablePagination'
 import Fab from '@mui/material/Fab'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Button from '@mui/material/Button'
 
 // Estilos
 import tableStyles from '@core/styles/table.module.css'
@@ -99,7 +100,8 @@ const TableProductos = () => {
       nombre: row.nombre,
       precioVenta: row.precioVenta,
       descripcion: row.descripcion,
-      esPerecedero: row.esPerecedero
+      esPerecedero: row.esPerecedero,
+      estadoActivo: row.estadoActivo
     }).toString();
 
     router.push(`/updateProductos?${queryParams}`);
@@ -205,6 +207,7 @@ const TableProductos = () => {
               <th>PRECIO DE VENTA</th>
               <th>DESCRIPCION</th>
               <th>CATEGORIA</th>
+              <th>ESTADO</th>
               <th>ACCIONES</th>
             </tr>
           </thead>
@@ -225,6 +228,13 @@ const TableProductos = () => {
                 </td>
                 <td>
                   <Typography>{row.esPerecedero === 1 ? 'Perecedero' : 'No Perecedero'}</Typography>
+                </td>
+                <td>
+                  <Typography>
+                    {row.estadoActivo ?
+                      <Button color='success'>Activo</Button>
+                      : <Button color='error'>Inactivo</Button>}
+                  </Typography>
                 </td>
                 <td>
                   <div className={tableStyles.btnContainer}>
