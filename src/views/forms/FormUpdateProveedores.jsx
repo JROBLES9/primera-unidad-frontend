@@ -29,13 +29,21 @@ const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, telefono: ini
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem('token');
             const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/proveedor/${idProveedor}`, {
                 nombre,
                 telefono,
                 direccion,
                 descripcion,
                 estadoActivo
-            });
+            },
+                { // Opciones
+                    headers: {
+                        Authorization: `${token}` // Agrega 'Bearer' si tu API lo requiere
+                    }
+                }
+            );
+
 
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Actualización Exitosa', severity: 'success' });

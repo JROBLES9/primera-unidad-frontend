@@ -68,7 +68,7 @@ const Login = ({ mode }) => {
         // Guarda el token en el localStorage para que se mantenga la sesión aunque el usuario cierre la ventana
         localStorage.setItem('token', data.token)
         console.log(localStorage.getItem('token'))
-        router.push('/account-settings')
+        router.push('/')
       } else {
         // Si el backend responde con un error, muestra el mensaje de error
         const text = await response.text()
