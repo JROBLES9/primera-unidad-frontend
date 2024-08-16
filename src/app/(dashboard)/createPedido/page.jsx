@@ -3,9 +3,9 @@ import { useSearchParams } from 'next/navigation'
 
 import Grid from '@mui/material/Grid'
 
-import FormLayoutsWithIcon from '@views/forms/FormCreateProveedores'
+import FormLayoutsWithIcon from '@views/forms/FormCreatePedido'
 
-const createProveedores = () => {
+const createPedido = () => {
   return (
     <Grid
       item
@@ -22,4 +22,4 @@ const createProveedores = () => {
   )
 }
 
-export default createProveedores
+export default createPedido

@@ -16,18 +16,20 @@ import Typography from '@mui/material/Typography'
 import Alert from '@mui/material/Alert'
 
 const FormLayoutsWithIcon = ({
-  idProveedor,
-  nombre: initialNombre,
-  direccion: initialDireccion,
-  telefono: initialTelefono,
-  descripcion: initialDescripcion,
-  estadoActivo: initialEstadoActivo
+  idPedido,
+  descripcion: initialdescripcion,
+  precioCompra: initialprecioCompra,
+  fechaPedido: initialfechaPedido,
+  idProducto: initialidProducto,
+  idProveedor: initialidProveedor,
+  estadoRecibido: initialestadoRecibido
 }) => {
-  const [nombre, setNombre] = useState(initialNombre || '')
-  const [direccion, setDireccion] = useState(initialDireccion || '')
-  const [telefono, setTelefono] = useState(initialTelefono || '')
-  const [descripcion, setDescripcion] = useState(initialDescripcion || '')
-  const estadoActivo = true
+  const [descripcion, setDescripcion] = useState(initialdescripcion || '')
+  const [precioCompra, setPrecioCompra] = useState(initialprecioCompra || '')
+  const [fechaPedido, setFechaPedido] = useState(initialfechaPedido || '')
+  const [idProducto, setIdProducto] = useState(initialidProducto || '')
+  const [idProveedor, setIdProveedor] = useState(initialidProveedor || '')
+  const estadoRecibido = true
   const [alert, setAlert] = useState({ show: false, message: '', severity: 'success' })
   const router = useRouter()
 
@@ -35,24 +37,25 @@ const FormLayoutsWithIcon = ({
     e.preventDefault()
 
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/proveedor/`, {
-        nombre,
-        direccion,
-        telefono,
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/pedido/`, {
         descripcion,
-        estadoActivo
+        precioCompra,
+        fechaPedido,
+        idProducto,
+        idProveedor,
+        estadoRecibido
       })
 
       if (response.status === 200) {
         setAlert({ show: true, message: 'Registro Exitoso', severity: 'success' })
         setTimeout(() => {
           setAlert({ show: false, message: '', severity: 'success' })
-          router.push('/proveedoresF')
+          router.push('/pedido')
         }, 1500)
       }
     } catch (error) {
-      console.error('Error al registrar al proveedor:', error)
-      setAlert({ show: true, message: 'Error al registrar al proveedor', severity: 'error' })
+      console.error('Error al registrar al pedido:', error)
+      setAlert({ show: true, message: 'Error al registrar al pedido', severity: 'error' })
       setTimeout(() => {
         setAlert({ show: false, message: '', severity: 'error' })
       }, 2000)
@@ -60,7 +63,7 @@ const FormLayoutsWithIcon = ({
   }
 
   const handleCancel = () => {
-    router.push('/proveedores') // Redirigir a la página de proveedores o cualquier otra página
+    router.push('/pedido') // Redirigir a la página de proveedores o cualquier otra página
   }
 
   return (
@@ -76,58 +79,13 @@ const FormLayoutsWithIcon = ({
               textAlign: 'center'
             }}
           >
-            REGISTRAR PROVEEDORES
+            REGISTRAR PEDIDOS
           </Typography>
         }
       />
       <CardContent>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={10}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label='Nombre'
-                value={nombre}
-                onChange={e => setNombre(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <i className='ri-user-3-line' />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label='Direccion'
-                value={direccion}
-                onChange={e => setDireccion(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <i className='ri-direction-line' />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label='Telefono'
-                value={telefono}
-                onChange={e => setTelefono(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <i className='ri-phone-line' />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -138,6 +96,69 @@ const FormLayoutsWithIcon = ({
                   startAdornment: (
                     <InputAdornment position='start'>
                       <i className='ri-file-text-line' />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label='Precio Compra'
+                value={precioCompra}
+                onChange={e => setPrecioCompra(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-direction-line' />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label='Fecha Pedido'
+                value={fechaPedido}
+                onChange={e => setFechaPedido(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-file-text-line' />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label='ID Producto'
+                value={idProducto}
+                onChange={e => setIdProducto(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-direction-line' />
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label='ID Proveedor'
+                value={idProveedor}
+                onChange={e => setIdProveedor(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <i className='ri-direction-line' />
                     </InputAdornment>
                   )
                 }}
