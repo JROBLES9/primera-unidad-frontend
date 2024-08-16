@@ -1,16 +1,19 @@
 "use client"
 import { useSearchParams } from 'next/navigation';
 import Grid from '@mui/material/Grid';
-import FormLayoutsWithIcon from '@views/forms/FormUpdateProveedores';
+import FormLayoutsWithIcon from '@views/forms/FormUpdateLotes';
 
-const UpdateClientes = () => {
+const UpdateLotes = () => {
     const searchParams = useSearchParams();
 
-    const idProveedor = searchParams.get('idProveedor');
-    const nombre = searchParams.get('nombre');
-    const telefono = searchParams.get('telefono');
-    const direccion = searchParams.get('direccion');
-    const descripcion = searchParams.get('descripcion');
+    const idLote = searchParams.get('idLote');
+    const categoria = searchParams.get('categoria');
+    const cantidadInicial = searchParams.get('cantidadInicial');
+    const cantidadDisponible = searchParams.get('cantidadDisponible');
+    const fechaCaducidad = searchParams.get('fechaCaducidad');
+    const fechaIngreso = searchParams.get('fechaIngreso');
+    const idPedido = searchParams.get('idPedido');
+    const idProducto = searchParams.get('idProducto');
     const estadoActivo = searchParams.get('estadoActivo');
 
     return (
@@ -21,15 +24,18 @@ const UpdateClientes = () => {
             align={'center'}
         >
             <FormLayoutsWithIcon
-                idProveedor={idProveedor}
-                nombre={nombre}
-                telefono={telefono}
-                direccion={direccion}
-                descripcion={descripcion}
+                idLote={idLote}
+                categoria={categoria}
+                cantidadInicial={cantidadInicial}
+                cantidadDisponible={cantidadDisponible}
+                fechaCaducidad={fechaCaducidad}
+                fechaIngreso={fechaIngreso}
+                idPedido={idPedido}
+                idProducto={idProducto}
                 estadoActivo={estadoActivo}
             />
         </Grid>
     );
 }
 
-export default UpdateClientes;
+export default UpdateLotes;
