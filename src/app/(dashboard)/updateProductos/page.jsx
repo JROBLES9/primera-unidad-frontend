@@ -11,6 +11,7 @@ const UpdateProductos = () => {
     const precioVenta = searchParams.get('precioVenta');
     const descripcion = searchParams.get('descripcion');
     const esPerecedero = searchParams.get('esPerecedero');
+    const estadoActivo = searchParams.get('estadoActivo');
 
     return (
         <Grid item xs={12} md={6} width={0.75}
@@ -20,11 +21,12 @@ const UpdateProductos = () => {
             align={'center'}
         >
             <FormLayoutsWithIcon
-                idCliente={idCliente}
+                idProducto={idProducto}
                 nombre={nombre}
                 precioVenta={precioVenta}
                 descripcion={descripcion}
                 esPerecedero={esPerecedero}
+                estadoActivo={estadoActivo}
             />
         </Grid>
     );
