@@ -311,6 +311,9 @@ const ColaboradoresComponent = () => {
             {paginatedData.map((row) => (
               <tr key={row.idRrhh}>
                 <td>
+                    <Typography>{row.idRrhh}</Typography>
+                </td>
+                <td>
                     <Typography>{row.nombre}</Typography>
                 </td>
                 <td>
