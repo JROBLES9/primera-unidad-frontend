@@ -29,7 +29,7 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
             nombre,
             precioVenta,
             descripcion,
-            esPerecedero
+            esPerecedero: String(esPerecedero), // Convertir a string
         };
 
         try {
