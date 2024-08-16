@@ -31,7 +31,7 @@ const ColaboradoresComponent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(urlBase + '/api/rrhh/all')
+        const response = await axios.get(urlBase + '/api/rrhh/all/1')
         setRowsData(response.data)
         setFilteredData(response.data)
         setLoading(false)
