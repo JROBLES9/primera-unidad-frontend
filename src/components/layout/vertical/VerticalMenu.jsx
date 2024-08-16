@@ -111,7 +111,7 @@ const VerticalMenu = ({ scrollMenu }) => {
 
           // suffix={<Chip label='5' size='small' color='error' />}
           >
-            <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
+            <MenuItem href='/colaboradores' icon={<i className='ri-user-settings-line' />}>
               Colaboradores
             </MenuItem>
             <MenuItem href='/login' icon={<i className='ri-user-settings-line' />}>
