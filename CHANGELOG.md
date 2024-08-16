@@ -10,3 +10,9 @@
 
 ### Fixed
 - N/A
+
+## [0.2.0] - 2024-08-16
+### Added
+- Module Provedores
+- Module Ventas
+- Module Lotes
