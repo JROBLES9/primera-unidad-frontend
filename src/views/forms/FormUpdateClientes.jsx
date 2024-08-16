@@ -24,11 +24,20 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/cliente/${idCliente}`, {
-                nombre,
-                telefono,
-                nit
-            });
+            const token = localStorage.getItem('token');
+            const response = await axios.put(
+                `${process.env.NEXT_PUBLIC_APP_URL}/api/cliente/${idCliente}`, // URL
+                { // Datos
+                    nombre,
+                    telefono,
+                    nit
+                },
+                { // Opciones
+                    headers: {
+                        Authorization: `${token}` // Agrega 'Bearer' si tu API lo requiere
+                    }
+                }
+            );
 
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Actualización Exitosa', severity: 'success' });

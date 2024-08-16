@@ -45,6 +45,7 @@ const NuevaVentaForm = () => {
         // Fetch clientes y productos
         const fetchData = async () => {
             try {
+                const token = localStorage.getItem('token');
                 const [clientesRes, productosRes] = await Promise.all([
                     axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/cliente/getAll`),
                     axios.get(`${process.env.NEXT_PUBLIC_APP_URL}/api/producto/all`)

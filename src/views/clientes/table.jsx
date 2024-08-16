@@ -15,7 +15,10 @@ import TablePagination from '@mui/material/TablePagination'
 // Estilos
 import tableStyles from '@core/styles/table.module.css'
 
-// Ruta base para el consumo de laAPI
+// Next
+import { useRouter } from 'next/navigation'
+
+// Ruta base para el consumo de la API
 const urlBase = process.env.NEXT_PUBLIC_APP_URL
 
 const TableClientes = () => {
@@ -28,10 +31,17 @@ const TableClientes = () => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
 
+  const router = useRouter() // Hook para redirección
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(urlBase + '/api/cliente/getAll')
+        const token = localStorage.getItem('token')
+        const response = await axios.get(urlBase + '/api/cliente/getAll', {
+          headers: {
+            Authorization: `${token}` // Asegúrate de incluir 'Bearer'
+          }
+        })
         setRowsData(response.data)
         setFilteredData(response.data)
         setLoading(false)
@@ -65,6 +75,17 @@ const TableClientes = () => {
     setPage(0)
   }
 
+  const handleEditClick = (row) => {
+    const queryParams = new URLSearchParams({
+      idCliente: row.idCliente,
+      nombre: row.nombre,
+      telefono: row.telefono,
+      nit: row.nit
+    }).toString()
+
+    router.push(`/updateClientes?${queryParams}`)
+  }
+
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   if (loading) return <div>Cargando...</div>
@@ -96,7 +117,7 @@ const TableClientes = () => {
           </Select>
         </div>
         <div className={tableStyles.buttonContainer}>
-          <Button variant="contained" color="primary" size="small">
+          <Button variant="contained" color="primary" size="small" href='/createClientes'>
             <img src="images/icons/btnAddPerson.png" alt="Agregar" />
             <label htmlFor="$">Agregar</label>
           </Button>
@@ -135,6 +156,7 @@ const TableClientes = () => {
                       color="info"
                       size="small"
                       className={tableStyles.btn}
+                      onClick={() => handleEditClick(row)} // Añadir función de edición
                     >
                       <img src="images/icons/btnEdit.png" alt="Editar" />
                     </Button>

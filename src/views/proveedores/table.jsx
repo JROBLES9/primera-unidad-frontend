@@ -36,7 +36,12 @@ const TableProveedores = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(urlBase + '/api/proveedor/getAll')
+                const token = localStorage.getItem('token')
+                const response = await axios.get(urlBase + '/api/proveedor/getAll', {
+                    headers: {
+                        Authorization: `${token}`
+                    }
+                })
                 setRowsData(response.data)
                 setFilteredData(response.data)
                 setLoading(false)

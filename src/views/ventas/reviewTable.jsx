@@ -38,7 +38,12 @@ const TableVentas = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(urlBase + '/api/detalleVenta/getAll/' + idVenta)
+                const token = localStorage.getItem('token')
+                const response = await axios.get(urlBase + '/api/detalleVenta/getAll/' + idVenta, {
+                    headers: {
+                        Authorization: `${token}`
+                    }
+                })
                 console.log(response.data)
                 setRowsData(response.data)
                 setFilteredData(response.data)

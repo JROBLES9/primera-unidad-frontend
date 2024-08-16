@@ -28,13 +28,20 @@ const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, direccion: in
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            const token = localStorage.getItem('token');
             const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/proveedor/`, {
                 nombre,
                 direccion,
                 telefono,
                 descripcion,
                 estadoActivo
-            });
+            },
+                { // Opciones
+                    headers: {
+                        Authorization: `${token}` // Agrega 'Bearer' si tu API lo requiere
+                    }
+                }
+            );
 
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Registro Exitoso', severity: 'success' });
