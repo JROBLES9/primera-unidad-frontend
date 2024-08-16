@@ -8,38 +8,47 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
 import { useRouter } from 'next/navigation';
 
-const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initialTelefono, nit: initialNit }) => {
+const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: initialPrecioVenta, descripcion: initialDescripcion, esPerecedero: initialEsPerecedero }) => {
     const [nombre, setNombre] = useState(initialNombre || '');
-    const [telefono, setTelefono] = useState(initialTelefono || '');
-    const [nit, setNit] = useState(initialNit || '');
+    const [precioVenta, setPrecioVenta] = useState(initialPrecioVenta || '');
+    const [descripcion, setDescripcion] = useState(initialDescripcion || '');
+    const [esPerecedero, setEsPerecedero] = useState(initialEsPerecedero || '');
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'success' });
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const data = {
+            nombre,
+            precioVenta,
+            descripcion,
+            esPerecedero
+        };
+
         try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/cliente/${idCliente}`, {
-                nombre,
-                telefono,
-                nit
-            });
+            console.log('Enviando datos:', data);  // Log de los datos que se están enviando
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/producto/`, data);
+
+            console.log('Respuesta del servidor:', response);  // Log de la respuesta del servidor
 
             if (response.status === 200) {
-                setAlert({ show: true, message: 'Actualización Exitosa', severity: 'success' });
+                setAlert({ show: true, message: 'Registro Exitoso', severity: 'success' });
                 setTimeout(() => {
                     setAlert({ show: false, message: '', severity: 'success' });
-                    router.push('/clientes');
+                    router.push('/productos');
                 }, 1500);
             }
         } catch (error) {
-            console.error('Error al actualizar el cliente:', error);
-            setAlert({ show: true, message: 'Error al actualizar el cliente', severity: 'error' });
+            console.error('Error al registrar el producto:', error);
+            console.log('Detalles del error:', error.response ? error.response.data : error.message);  // Log de los detalles del error
+            setAlert({ show: true, message: 'Error al registrar el producto', severity: 'error' });
             setTimeout(() => {
                 setAlert({ show: false, message: '', severity: 'error' });
             }, 2000);
@@ -47,7 +56,7 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
     };
 
     const handleCancel = () => {
-        router.push('/clientes');  // Redirigir a la página de proveedores o cualquier otra página
+        router.push('/productos');  // Redirigir a la página de productos o cualquier otra página
     };
 
     return (
@@ -63,7 +72,7 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
                             textAlign: 'center',
                         }}
                     >
-                        EDITAR CLIENTE
+                        REGISTRAR PRODUCTO
                     </Typography>
                 }
             />
@@ -76,43 +85,37 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
                                 label='Nombre'
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-user-3-line' />
-                                        </InputAdornment>
-                                    )
-                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Teléfono'
-                                value={telefono}
-                                onChange={(e) => setTelefono(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-phone-fill' />
-                                        </InputAdornment>
-                                    )
-                                }}
+                                label='Precio de Venta'
+                                value={precioVenta}
+                                onChange={(e) => setPrecioVenta(e.target.value)}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Nit'
-                                value={nit}
-                                onChange={(e) => setNit(e.target.value)}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-id-card-fill' />
-                                        </InputAdornment>
-                                    )
-                                }}
+                                label='Descripcion'
+                                value={descripcion}
+                                onChange={(e) => setDescripcion(e.target.value)}
+                            />
+                        </Grid>
+                        <Grid item xs={12} align={'start'}>
+                            <label htmlFor="s">TIPO</label>
+                            <br />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={esPerecedero === 1}
+                                        onChange={(e) => setEsPerecedero(e.target.checked ? 1 : 0)}
+                                        color="success"
+                                        size='medium'
+                                    />
+                                }
+                                label={esPerecedero == true ? 'Perecedero' : 'No perecedero'}
                             />
                         </Grid>
                         <Grid item xs={12} align={'center'}>

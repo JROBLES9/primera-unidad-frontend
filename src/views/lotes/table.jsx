@@ -18,14 +18,14 @@ import tableStyles from '@core/styles/table.module.css'
 
 const urlBase = process.env.NEXT_PUBLIC_APP_URL
 
-const TableProveedores = () => {
+const TableLotes = () => {
     // Estado para almacenar los datos
     const [rowsData, setRowsData] = useState([])
     const [filteredData, setFilteredData] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState('')
-    const [filterField, setFilterField] = useState('nombre')
+    const [filterField, setFilterField] = useState('categoria')
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [view, setView] = useState('all') // Estado para manejar el filtro de estado
@@ -36,7 +36,7 @@ const TableProveedores = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(urlBase + '/api/proveedor/getAll')
+                const response = await axios.get(urlBase + '/api/lote/all')
                 setRowsData(response.data)
                 setFilteredData(response.data)
                 setLoading(false)
@@ -78,18 +78,34 @@ const TableProveedores = () => {
         setView(newView)
     }
 
+    // Función para manejar la eliminación
+    const handleDeleteClick = async (row) => {
+        try {
+            const response = await axios.delete(`${urlBase}/api/lote/${row.idLote}`);
+            if (response.status === 200) {
+                // Recargar la página
+                router.reload();
+            }
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error);
+        };
+    };
+
     // Función para manejar la edición
     const handleEditClick = (row) => {
         const queryParams = new URLSearchParams({
-            idProveedor: row.idProveedor,
-            nombre: row.nombre,
-            telefono: row.telefono,
-            direccion: row.direccion,
-            descripcion: row.descripcion,
-            estadoActivo: row.estadoActivo.toString()
+            idLote: row.idLote,
+            categoria: row.categoria,
+            cantidadInicial: row.cantidadInicial.toString(),
+            cantidadDisponible: row.cantidadDisponible.toString(),
+            fechaCaducidad: row.fechaCaducidad,
+            estadoActivo: row.estadoActivo.toString(),
+            fechaIngreso: row.fechaIngreso,
+            idPedido: row.idPedido,
+            idProducto: row.idProducto
         }).toString()
 
-        router.push(`/updateProveedores?${queryParams}`)
+        router.push(`/updateLotes?${queryParams}`)
     }
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -117,8 +133,7 @@ const TableProveedores = () => {
                         size="small"
                         className={tableStyles.selectField}
                     >
-                        <MenuItem value="nombre">Nombre</MenuItem>
-                        <MenuItem value="telefono">Teléfono</MenuItem>
+                        <MenuItem value="categoria">Categoria</MenuItem>
                     </Select>
                 </div>
                 <div className={tableStyles.filterContainer}>
@@ -145,7 +160,7 @@ const TableProveedores = () => {
                     </ToggleButtonGroup>
                 </div>
                 <div className={tableStyles.buttonContainer}>
-                    <Fab variant="extended" color="primary" size="medium" href='/createProveedores'>
+                    <Fab variant="extended" color="primary" size="medium" href='/createLotes'>
                         <img src="images/icons/btnAddPerson.png" alt="Agregar" />
                         <label htmlFor="$">Agregar</label>
                     </Fab>
@@ -156,31 +171,37 @@ const TableProveedores = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>NOMBRE</th>
-                            <th>TELEFONO</th>
-                            <th>DIRECCION</th>
-                            <th>DESCRIPCION</th>
+                            <th>CATEGORIA</th>
+                            <th>CANTIDAD INICIAL</th>
+                            <th>CANTIDAD DISPONIBLE</th>
+                            <th>FECHA DE CADUCIDAD</th>
+                            <th>FECHA DE INGRESO</th>
                             <th>ESTADO</th>
+                            <th>ID DE PEDIDO</th>
+                            <th>ID DE PRODUCTO</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
                         {paginatedData.map((row) => (
-                            <tr key={row.idProveedor}>
+                            <tr key={row.idLote}>
                                 <td>
-                                    <Typography>{row.idProveedor}</Typography>
+                                    <Typography>{row.idLote}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.nombre}</Typography>
+                                    <Typography>{row.categoria}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.telefono}</Typography>
+                                    <Typography>{row.cantidadInicial}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.direccion}</Typography>
+                                    <Typography>{row.cantidadDisponible}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.descripcion}</Typography>
+                                    <Typography>{row.fechaCaducidad}</Typography>
+                                </td>
+                                <td>
+                                    <Typography>{row.fechaIngreso}</Typography>
                                 </td>
                                 <td>
                                     <Typography>
@@ -188,6 +209,12 @@ const TableProveedores = () => {
                                             <Button color='success'>Activo</Button>
                                             : <Button color='error'>Inactivo</Button>}
                                     </Typography>
+                                </td>
+                                <td>
+                                    <Typography>{row.idPedido}</Typography>
+                                </td>
+                                <td>
+                                    <Typography>{row.idProducto}</Typography>
                                 </td>
                                 <td>
                                     <div className={tableStyles.btnContainer}>
@@ -200,6 +227,7 @@ const TableProveedores = () => {
                                             <img src="images/icons/btnEdit.png" alt="Editar" />
                                         </Fab>
                                         <Fab
+                                            onClick={() => handleDeleteClick(row)}
                                             variant="contained"
                                             color="primary"
                                             size="medium"
@@ -229,4 +257,4 @@ const TableProveedores = () => {
     )
 }
 
-export default TableProveedores
+export default TableLotes

@@ -1,42 +1,44 @@
 "use client";
 
-// Importaciones de React y MUI
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+
+// Para pasar datos a otro componente (push)
+import { useRouter } from 'next/navigation'
+
+// MUI
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
-import Button from '@mui/material/Button'
+// import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TablePagination from '@mui/material/TablePagination'
 import Fab from '@mui/material/Fab'
-import { useRouter } from 'next/navigation'
+
+// Estilos
 import tableStyles from '@core/styles/table.module.css'
 
+// Ruta base para el consumo de la API
 const urlBase = process.env.NEXT_PUBLIC_APP_URL
 
-const TableProveedores = () => {
-    // Estado para almacenar los datos
+const TableVentas = () => {
     const [rowsData, setRowsData] = useState([])
     const [filteredData, setFilteredData] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState('')
-    const [filterField, setFilterField] = useState('nombre')
+    const [filterField, setFilterField] = useState('clienteNombre')  // Campo de filtrado por defecto
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
-    const [view, setView] = useState('all') // Estado para manejar el filtro de estado
 
-    const router = useRouter()
+    const router = useRouter();  // Inicializar el router
 
-    // Fetch de datos al cargar el componente
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(urlBase + '/api/proveedor/getAll')
+                const response = await axios.get(urlBase + '/api/venta/getAll')
+                console.log(response.data)
                 setRowsData(response.data)
                 setFilteredData(response.data)
                 setLoading(false)
@@ -45,25 +47,22 @@ const TableProveedores = () => {
                 setLoading(false)
             }
         }
+
         fetchData()
     }, [])
 
-    // Filtrado de datos al cambiar el término de búsqueda, campo de filtro o estado de vista
     useEffect(() => {
         const filterData = () => {
             const lowercasedTerm = searchTerm.toLowerCase()
             const filtered = rowsData.filter(row =>
-                row[filterField]?.toLowerCase().includes(lowercasedTerm) &&
-                (view === 'all' ||
-                    (view === 'active' && row.estadoActivo) ||
-                    (view === 'inactive' && !row.estadoActivo))
+                row[filterField]?.toLowerCase().includes(lowercasedTerm)
             )
             setFilteredData(filtered)
         }
-        filterData()
-    }, [searchTerm, filterField, rowsData, view])
 
-    // Manejo de la paginación
+        filterData()
+    }, [searchTerm, filterField, rowsData])
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage)
     }
@@ -73,24 +72,18 @@ const TableProveedores = () => {
         setPage(0)
     }
 
-    // Manejo del cambio de vista (filtro de estado)
-    const handleView = (event, newView) => {
-        setView(newView)
-    }
-
-    // Función para manejar la edición
     const handleEditClick = (row) => {
+        // Construir la URL con los parámetros
         const queryParams = new URLSearchParams({
-            idProveedor: row.idProveedor,
-            nombre: row.nombre,
-            telefono: row.telefono,
-            direccion: row.direccion,
-            descripcion: row.descripcion,
-            estadoActivo: row.estadoActivo.toString()
-        }).toString()
+            idVenta: row.idVenta,
+            fecha: row.fecha,
+            montoTotal: row.montoTotal,
+            clienteNombre: row.clienteNombre,
+            empleadoNombre: row.empleadoNombre
+        }).toString();
 
-        router.push(`/updateProveedores?${queryParams}`)
-    }
+        router.push(`/reviewVenta?${queryParams}`);
+    };
 
     const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
@@ -117,37 +110,15 @@ const TableProveedores = () => {
                         size="small"
                         className={tableStyles.selectField}
                     >
-                        <MenuItem value="nombre">Nombre</MenuItem>
-                        <MenuItem value="telefono">Teléfono</MenuItem>
+                        <MenuItem value="clienteNombre">Cliente</MenuItem>
+                        <MenuItem value="fecha">Fecha</MenuItem>
+                        <MenuItem value="empleadoNombre">Empleado</MenuItem>
                     </Select>
                 </div>
-                <div className={tableStyles.filterContainer}>
-                    {/* Botones de filtro de estado */}
-                    <ToggleButtonGroup
-                        exclusive
-                        value={view}
-                        orientation='horizontal'
-                        onChange={handleView}
-                        aria-label='filter by status'
-                    >
-                        <ToggleButton value='all' aria-label='all' >
-                            <i className='ri-user-line' />
-                            Todos
-                        </ToggleButton>
-                        <ToggleButton value='active' aria-label='active'>
-                            <i className='ri-user-follow-line' />
-                            Activos
-                        </ToggleButton>
-                        <ToggleButton value='inactive' aria-label='inactive'>
-                            <i className='ri-user-forbid-line' />
-                            Inactivos
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                </div>
                 <div className={tableStyles.buttonContainer}>
-                    <Fab variant="extended" color="primary" size="medium" href='/createProveedores'>
-                        <img src="images/icons/btnAddPerson.png" alt="Agregar" />
-                        <label htmlFor="$">Agregar</label>
+                    <Fab variant="extended" color="primary" size="medium" href='/createVenta'>
+                        <i className='ri-apps-2-add-line' />
+                        <label htmlFor="$">Venta Nueva</label>
                     </Fab>
                 </div>
             </div>
@@ -156,38 +127,30 @@ const TableProveedores = () => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>NOMBRE</th>
-                            <th>TELEFONO</th>
-                            <th>DIRECCION</th>
-                            <th>DESCRIPCION</th>
-                            <th>ESTADO</th>
+                            <th>FECHA</th>
+                            <th>TOTAL Q</th>
+                            <th>CLIENTE</th>
+                            <th>EMPLEADO</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
                         {paginatedData.map((row) => (
-                            <tr key={row.idProveedor}>
+                            <tr key={row.idVenta}>
                                 <td>
-                                    <Typography>{row.idProveedor}</Typography>
+                                    <Typography>{row.idVenta}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.nombre}</Typography>
+                                    <Typography>{row.fecha}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.telefono}</Typography>
+                                    <Typography>{row.montoTotal}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.direccion}</Typography>
+                                    <Typography>{row.clienteNombre}</Typography>
                                 </td>
                                 <td>
-                                    <Typography>{row.descripcion}</Typography>
-                                </td>
-                                <td>
-                                    <Typography>
-                                        {row.estadoActivo ?
-                                            <Button color='success'>Activo</Button>
-                                            : <Button color='error'>Inactivo</Button>}
-                                    </Typography>
+                                    <Typography>{row.empleadoNombre}</Typography>
                                 </td>
                                 <td>
                                     <div className={tableStyles.btnContainer}>
@@ -197,15 +160,7 @@ const TableProveedores = () => {
                                             size="medium"
                                             className={tableStyles.btn}
                                         >
-                                            <img src="images/icons/btnEdit.png" alt="Editar" />
-                                        </Fab>
-                                        <Fab
-                                            variant="contained"
-                                            color="primary"
-                                            size="medium"
-                                            className={tableStyles.btn}
-                                        >
-                                            <img src="images/icons/btnDelete.png" alt="Eliminar" />
+                                            <i className='ri-eye-fill' alt="Ver" />
                                         </Fab>
                                     </div>
                                 </td>
@@ -229,4 +184,4 @@ const TableProveedores = () => {
     )
 }
 
-export default TableProveedores
+export default TableVentas

@@ -14,32 +14,38 @@ import Alert from '@mui/material/Alert';
 
 import { useRouter } from 'next/navigation';
 
-const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initialTelefono, nit: initialNit }) => {
+const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, direccion: initialDireccion,
+    telefono: initialTelefono, descripcion: initialDescripcion, estadoActivo: initialEstadoActivo
+}) => {
     const [nombre, setNombre] = useState(initialNombre || '');
+    const [direccion, setDireccion] = useState(initialDireccion || '');
     const [telefono, setTelefono] = useState(initialTelefono || '');
-    const [nit, setNit] = useState(initialNit || '');
+    const [descripcion, setDescripcion] = useState(initialDescripcion || '');
+    const estadoActivo = true;
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'success' });
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/cliente/${idCliente}`, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_APP_URL}/api/proveedor/`, {
                 nombre,
+                direccion,
                 telefono,
-                nit
+                descripcion,
+                estadoActivo
             });
 
             if (response.status === 200) {
-                setAlert({ show: true, message: 'Actualización Exitosa', severity: 'success' });
+                setAlert({ show: true, message: 'Registro Exitoso', severity: 'success' });
                 setTimeout(() => {
                     setAlert({ show: false, message: '', severity: 'success' });
-                    router.push('/clientes');
+                    router.push('/proveedoresF');
                 }, 1500);
             }
         } catch (error) {
-            console.error('Error al actualizar el cliente:', error);
-            setAlert({ show: true, message: 'Error al actualizar el cliente', severity: 'error' });
+            console.error('Error al registrar al proveedor:', error);
+            setAlert({ show: true, message: 'Error al registrar al proveedor', severity: 'error' });
             setTimeout(() => {
                 setAlert({ show: false, message: '', severity: 'error' });
             }, 2000);
@@ -47,7 +53,7 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
     };
 
     const handleCancel = () => {
-        router.push('/clientes');  // Redirigir a la página de proveedores o cualquier otra página
+        router.push('/proveedores');  // Redirigir a la página de proveedores o cualquier otra página
     };
 
     return (
@@ -63,7 +69,7 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
                             textAlign: 'center',
                         }}
                     >
-                        EDITAR CLIENTE
+                        REGISTRAR PROVEEDORES
                     </Typography>
                 }
             />
@@ -88,13 +94,13 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Teléfono'
-                                value={telefono}
-                                onChange={(e) => setTelefono(e.target.value)}
+                                label='Direccion'
+                                value={direccion}
+                                onChange={(e) => setDireccion(e.target.value)}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position='start'>
-                                            <i className='ri-phone-fill' />
+                                            <i className='ri-direction-line' />
                                         </InputAdornment>
                                     )
                                 }}
@@ -103,13 +109,28 @@ const FormLayoutsWithIcon = ({ idCliente, nombre: initialNombre, telefono: initi
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Nit'
-                                value={nit}
-                                onChange={(e) => setNit(e.target.value)}
+                                label='Telefono'
+                                value={telefono}
+                                onChange={(e) => setTelefono(e.target.value)}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position='start'>
-                                            <i className='ri-id-card-fill' />
+                                            <i className='ri-phone-line' />
+                                        </InputAdornment>
+                                    )
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label='Descripcion'
+                                value={descripcion}
+                                onChange={(e) => setDescripcion(e.target.value)}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position='start'>
+                                            <i className='ri-file-text-line' />
                                         </InputAdornment>
                                     )
                                 }}

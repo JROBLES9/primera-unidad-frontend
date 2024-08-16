@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import Switch from '@mui/material/Switch';
@@ -17,36 +16,46 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useRouter } from 'next/navigation';
 
-const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, telefono: initialTelefono, direccion: initialDireccion, descripcion: initialDescripcion, estadoActivo: initialEstadoActivo }) => {
-    const [nombre, setNombre] = useState(initialNombre || '');
-    const [telefono, setTelefono] = useState(initialTelefono || '');
-    const [direccion, setDireccion] = useState(initialDireccion || '');
-    const [descripcion, setDescripcion] = useState(initialDescripcion || '');
-    const [estadoActivo, setEstadoActivo] = useState(initialEstadoActivo); // Estado booleano
+const FormLayoutsWithIcon = ({ idLote, categoria: initialCategoria, cantidadInicial: initialCantidadInicial, cantidadDisponible: initialCantidadDisponible, fechaCaducidad: initialFechaCaducidad, fechaIngreso: initialFechaIngreso, idPedido: initialIdPedido, idProducto: initialIdProdcuto, estadoActivo: initialEstadoActivo }) => {
+    const [categoria, setCategoria] = useState(initialCategoria || '');
+    const [cantidadInicial, setCantidadInicial] = useState(initialCantidadInicial || '');
+    const [cantidadDisponible, setCantidadDisponible] = useState(initialCantidadDisponible || '');
+    const [fechaCaducidad, setFechaCaducidad] = useState(initialFechaCaducidad || '');
+    const [fechaIngreso, setFechaIngreso] = useState(initialFechaIngreso || '');
+    const [estadoActivo, setEstadoActivo] = useState(initialEstadoActivo);
+    const [idPedido, setIdPedido] = useState(initialIdPedido || '');
+    const [idProducto, setIdProducto] = useState(initialIdProdcuto || '');
     const [alert, setAlert] = useState({ show: false, message: '', severity: 'success' });
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/proveedor/${idProveedor}`, {
-                nombre,
-                telefono,
-                direccion,
-                descripcion,
-                estadoActivo
-            });
+        const dataToSend = {
+            categoria,
+            cantidadInicial,
+            cantidadDisponible,
+            fechaCaducidad,
+            fechaIngreso,
+            estadoActivo: String(estadoActivo), // Convertir estadoActivo a string
+            idPedido,
+            idProducto
+        };
 
+        console.log('Data being sent:', dataToSend);
+
+        try {
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/lote/${idLote}`, dataToSend);
+            console.log('response:', response);
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Actualización Exitosa', severity: 'success' });
                 setTimeout(() => {
                     setAlert({ show: false, message: '', severity: 'success' });
-                    router.push('/proveedores');
+                    router.push('/lotes');
                 }, 1500);
             }
         } catch (error) {
-            console.error('Error al actualizar al proveedor:', error);
-            setAlert({ show: true, message: 'Error al actualizar al proveedor', severity: 'error' });
+            console.error('Error al actualizar al lote:', error);
+            setAlert({ show: true, message: 'Error al actualizar al lote', severity: 'error' });
             setTimeout(() => {
                 setAlert({ show: false, message: '', severity: 'error' });
             }, 2000);
@@ -54,7 +63,7 @@ const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, telefono: ini
     };
 
     const handleCancel = () => {
-        router.push('/proveedores');  // Redirigir a la página de proveedores o cualquier otra página
+        router.push('/lotes');  // Redirigir a la página de lote o cualquier otra página
     };
 
     return (
@@ -70,7 +79,7 @@ const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, telefono: ini
                             textAlign: 'center',
                         }}
                     >
-                        EDITAR PROVEEDOR
+                        EDITAR LOTE
                     </Typography>
                 }
             />
@@ -80,60 +89,50 @@ const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, telefono: ini
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Nombre'
-                                value={nombre}
-                                onChange={(e) => setNombre(e.target.value)}
+                                label='Categoria'
+                                value={categoria}
+                                onChange={(e) => setCategoria(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-user-3-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Teléfono'
-                                value={telefono}
-                                onChange={(e) => setTelefono(e.target.value)}
+                                label='Cantidad Inicial'
+                                value={cantidadInicial}
+                                onChange={(e) => setCantidadInicial(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-phone-fill' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Dirección'
-                                value={direccion}
-                                onChange={(e) => setDireccion(e.target.value)}
+                                label='Cantidad Disponible'
+                                value={cantidadDisponible}
+                                onChange={(e) => setCantidadDisponible(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-map-pin-2-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 fullWidth
-                                label='Descripción'
-                                value={descripcion}
-                                onChange={(e) => setDescripcion(e.target.value)}
+                                label='Fecha de Caducidad'
+                                value={fechaCaducidad}
+                                onChange={(e) => setFechaCaducidad(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-file-list-2-line' />
-                                        </InputAdornment>
-                                    )
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label='Fecha de Ingreso'
+                                value={fechaIngreso}
+                                onChange={(e) => setFechaIngreso(e.target.value)}
+                                InputProps={{
                                 }}
                             />
                         </Grid>
@@ -143,13 +142,33 @@ const FormLayoutsWithIcon = ({ idProveedor, nombre: initialNombre, telefono: ini
                             <FormControlLabel
                                 control={
                                     <Switch
-                                        checked={estadoActivo == true ? true : false}
-                                        onChange={(e) => setEstadoActivo(e.target.checked)}
+                                        checked={estadoActivo === 1}
+                                        onChange={(e) => setEstadoActivo(e.target.checked ? 1 : 0)}
                                         color="success"
                                         size='medium'
                                     />
                                 }
                                 label={estadoActivo == true ? 'Activo' : 'Inactivo'}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label='Id del Pedido'
+                                value={idPedido}
+                                onChange={(e) => setIdPedido(e.target.value)}
+                                InputProps={{
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                label='Id del Producto'
+                                value={idProducto}
+                                onChange={(e) => setIdProducto(e.target.value)}
+                                InputProps={{
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12} align={'center'} >
