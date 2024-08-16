@@ -33,6 +33,7 @@ const TableProductos = () => {
   const [filterField, setFilterField] = useState('nombre')  // Campo de filtrado por defecto
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [categoryFilter, setCategoryFilter] = useState('all')
   const [view, setView] = useState('all') // Estado para manejar el filtro de estado
 
   const router = useRouter();  // Inicializar el router
@@ -60,12 +61,15 @@ const TableProductos = () => {
         row[filterField]?.toLowerCase().includes(lowercasedTerm) &&
         (view === 'all' ||
           (view === 'active' && row.estadoActivo) ||
-          (view === 'inactive' && !row.estadoActivo))
+          (view === 'inactive' && !row.estadoActivo)) &&
+        (categoryFilter === 'all' ||
+          (categoryFilter === 'perecedero' && row.esPerecedero === 1) ||
+          (categoryFilter === 'no-perecedero' && row.esPerecedero === 0))
       )
       setFilteredData(filtered)
     }
     filterData()
-  }, [searchTerm, filterField, rowsData, view])
+  }, [searchTerm, filterField, rowsData, view, categoryFilter])
 
   // Manejo de la paginación
 
@@ -83,6 +87,11 @@ const TableProductos = () => {
     setView(newView)
   }
 
+  //Filtro por categoría
+  const handleCategoryFilter = (event, newCategory) => {
+    setCategoryFilter(newCategory)
+  }
+
   const handleEditClick = (row) => {
     // Construir la URL con los parámetros
     const queryParams = new URLSearchParams({
@@ -94,6 +103,26 @@ const TableProductos = () => {
     }).toString();
 
     router.push(`/updateProductos?${queryParams}`);
+  };
+
+  const handleDeleteClick = async (row) => {
+    const { idProducto } = row;
+
+    try {
+      const response = await fetch(`/api/productos/${idProducto}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el producto');
+      }
+
+      // Actualizar el estado local o volver a cargar los datos
+      setFilteredData(filteredData.filter(product => product.idProducto !== idProducto));
+    } catch (error) {
+      console.error('Error:', error);
+      // Manejar el error, por ejemplo, mostrar un mensaje al usuario
+    }
   };
 
   const paginatedData = filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -126,6 +155,7 @@ const TableProductos = () => {
             <MenuItem value="descripcion">Descripción</MenuItem>
           </Select>
         </div>
+
         <div className={tableStyles.filterContainer}>
           {/* Botones de filtro de estado */}
           <ToggleButtonGroup
@@ -148,7 +178,25 @@ const TableProductos = () => {
               Inactivos
             </ToggleButton>
           </ToggleButtonGroup>
+          <ToggleButtonGroup
+            exclusive
+            value={categoryFilter}
+            orientation='horizontal'
+            onChange={handleCategoryFilter}
+            aria-label='filter by category'
+          >
+            <ToggleButton value='all' aria-label='all categories'>
+              Todas las categorías
+            </ToggleButton>
+            <ToggleButton value='perecedero' aria-label='perecedero'>
+              Perecedero
+            </ToggleButton>
+            <ToggleButton value='no-perecedero' aria-label='no perecedero'>
+              No Perecedero
+            </ToggleButton>
+          </ToggleButtonGroup>
         </div>
+
         <div className={tableStyles.buttonContainer}>
           <Fab variant="extended" color="primary" size="medium" href='/createProductos'>
             <img src="images/icons/btnCreate.png" alt="Agregar" />
@@ -197,6 +245,7 @@ const TableProductos = () => {
                       <img src="images/icons/btnEdit.png" alt="Editar" />
                     </Fab>
                     <Fab
+                      onClick={() => handleDeleteClick(row)}
                       variant="contained"
                       color="primary"
                       size="medium"
