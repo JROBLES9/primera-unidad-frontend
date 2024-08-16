@@ -28,14 +28,18 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const dataToSend = {
+            nombre,
+            precioVenta,
+            descripcion,
+            esPerecedero: String(esPerecedero), // Convertir a string
+            estadoActivo: String(estadoActivo), // Convertir a string
+        };
+
+        console.log('Data being sent:', dataToSend);
+
         try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/producto/${idProducto}`, {
-                nombre,
-                precioVenta,
-                descripcion,
-                esPerecedero,
-                estadoActivo
-            });
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_APP_URL}/api/producto/${idProducto}`, dataToSend);
 
             if (response.status === 200) {
                 setAlert({ show: true, message: 'Actualización Exitosa', severity: 'success' });
@@ -84,11 +88,6 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
                                 value={nombre}
                                 onChange={(e) => setNombre(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-user-3-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
@@ -107,11 +106,6 @@ const FormLayoutsWithIcon = ({ idProducto, nombre: initialNombre, precioVenta: i
                                 value={descripcion}
                                 onChange={(e) => setDescripcion(e.target.value)}
                                 InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                            <i className='ri-file-list-2-line' />
-                                        </InputAdornment>
-                                    )
                                 }}
                             />
                         </Grid>
